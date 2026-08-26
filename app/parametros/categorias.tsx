@@ -17,7 +17,7 @@ function CategoryColumn({
         <form
           key={cat.id}
           action={saveCategory}
-          className="flex items-center gap-2 rounded border border-border p-2"
+          className="flex flex-wrap items-center gap-2 rounded border border-border p-2"
         >
           <input type="hidden" name="id" value={cat.id} />
           <input
@@ -29,7 +29,7 @@ function CategoryColumn({
           <input
             name="name"
             defaultValue={cat.name}
-            className="flex-1 rounded border border-border bg-bg px-2 py-1 text-sm"
+            className="min-w-[8rem] flex-1 rounded border border-border bg-bg px-2 py-1 text-sm"
           />
           <button
             type="submit"
@@ -46,7 +46,7 @@ function CategoryColumn({
         </form>
       ))}
 
-      <form action={saveCategory} className="flex items-center gap-2 pt-1">
+      <form action={saveCategory} className="flex flex-wrap items-center gap-2 pt-1">
         <input type="hidden" name="type" value={type} />
         <input
           name="color"
@@ -58,7 +58,7 @@ function CategoryColumn({
           name="name"
           placeholder="Nova categoria"
           required
-          className="flex-1 rounded border border-border bg-bg px-2 py-1 text-sm"
+          className="min-w-[8rem] flex-1 rounded border border-border bg-bg px-2 py-1 text-sm"
         />
         <button
           type="submit"

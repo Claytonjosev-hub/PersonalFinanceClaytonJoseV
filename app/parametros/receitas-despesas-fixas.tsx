@@ -35,13 +35,13 @@ export function ReceitasDespesasFixas({
             <form
               key={income.id}
               action={saveRecurringIncome}
-              className="flex items-center gap-2 rounded border border-border p-2"
+              className="flex flex-wrap items-center gap-2 rounded border border-border p-2"
             >
               <input type="hidden" name="id" value={income.id} />
               <input
                 name="description"
                 defaultValue={income.description}
-                className="flex-1 rounded border border-border bg-bg px-2 py-1 text-sm"
+                className="min-w-[8rem] flex-1 rounded border border-border bg-bg px-2 py-1 text-sm"
               />
               <input
                 name="amount"
@@ -64,12 +64,12 @@ export function ReceitasDespesasFixas({
               </button>
             </form>
           ))}
-          <form action={saveRecurringIncome} className="flex items-center gap-2 pt-1">
+          <form action={saveRecurringIncome} className="flex flex-wrap items-center gap-2 pt-1">
             <input
               name="description"
               placeholder="Ex: Salário líquido"
               required
-              className="flex-1 rounded border border-border bg-bg px-2 py-1 text-sm"
+              className="min-w-[8rem] flex-1 rounded border border-border bg-bg px-2 py-1 text-sm"
             />
             <input
               name="amount"
