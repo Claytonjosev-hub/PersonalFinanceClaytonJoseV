@@ -1,0 +1,23 @@
+# Node / Next.js
+node_modules/
+.next/
+out/
+build/
+*.tsbuildinfo
+npm-debug.log*
+
+# Env vars (secrets — never commit)
+.env
+.env.local
+.env.*.local
+
+# Sensitive local-only data — real financial figures, never versioned
+"Personal Finance (1).xlsx"
+supabase/seed-local/
+*.seed.sql
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
