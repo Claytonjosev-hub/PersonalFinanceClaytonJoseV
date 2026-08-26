@@ -8,6 +8,7 @@ const LINKS = [
   { href: '/dividas', label: 'Dívidas' },
   { href: '/lancamentos', label: 'Lançamentos' },
   { href: '/controladoria', label: 'Controladoria' },
+  { href: '/fluxo-caixa', label: 'Fluxo de Caixa' },
 ];
 
 export function Nav({ activePath }: { activePath: string }) {
