@@ -15,9 +15,7 @@ import {
   computeIndicadores,
   totalDebtInstallmentsForMonth,
 } from '@/lib/ledger/projection';
-import { Receitas } from './receitas';
-import { Despesas } from './despesas';
-import { ResultadoIndicadores } from './resultado-indicadores';
+import { TabelaControladoria } from './tabela-controladoria';
 
 export default async function ControladoriaPage() {
   const supabase = await createClient();
@@ -67,11 +65,9 @@ export default async function ControladoriaPage() {
   return (
     <div className="min-h-screen">
       <Nav activePath="/controladoria" />
-      <main className="mx-auto flex max-w-6xl flex-col gap-6 p-6">
+      <main className="mx-auto flex max-w-full flex-col gap-6 p-6">
         <h1 className="text-2xl font-semibold">Controladoria</h1>
-        <Receitas monthsAxis={monthsAxis} monthlyReceitas={monthlyReceitas} />
-        <Despesas monthsAxis={monthsAxis} monthlyDespesas={monthlyDespesas} />
-        <ResultadoIndicadores
+        <TabelaControladoria
           monthsAxis={monthsAxis}
           monthlyReceitas={monthlyReceitas}
           monthlyDespesas={monthlyDespesas}
