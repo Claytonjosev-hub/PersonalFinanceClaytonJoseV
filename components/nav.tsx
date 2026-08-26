@@ -7,6 +7,7 @@ const LINKS = [
   { href: '/parametros', label: 'Parâmetros' },
   { href: '/dividas', label: 'Dívidas' },
   { href: '/lancamentos', label: 'Lançamentos' },
+  { href: '/controladoria', label: 'Controladoria' },
 ];
 
 export function Nav({ activePath }: { activePath: string }) {
