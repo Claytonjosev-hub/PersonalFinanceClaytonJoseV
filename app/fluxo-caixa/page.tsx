@@ -57,11 +57,12 @@ export default async function FluxoCaixaPage({
     monthsAxis.findIndex((m) => m.year === todayMonth.year && m.month === todayMonth.month)
   );
   const requestedIndex = mes ? Number(mes) : defaultIndex;
-  const selectedIndex = Math.min(Math.max(requestedIndex, 0), monthsAxis.length - 1);
+  const leftIndex = Math.min(Math.max(requestedIndex, 0), monthsAxis.length - 1);
+  const rightIndex = leftIndex + 1 < monthsAxis.length ? leftIndex + 1 : null;
 
-  // Resultados for every month up to (but not including) the selected one,
-  // to derive the correct starting balance for the selected month's first
-  // day — reusing computeSaldoAcumulado exactly like Controladoria does.
+  // Resultados for every month up to the selected pair, to derive the
+  // correct starting balance for each side — reusing computeSaldoAcumulado
+  // exactly like Controladoria does, so the two screens can never disagree.
   const resultados = monthsAxis.map((m) => {
     const receitas = computeMonthlyReceitas(m, recurringIncomes, transactions, categories);
     const despesas = computeMonthlyDespesas(
@@ -75,28 +76,42 @@ export default async function FluxoCaixaPage({
     return receitas.total - despesas.total;
   });
   const saldoAcumulado = computeSaldoAcumulado(parameters.initial_balance, resultados);
-  const saldoInicioDoMes =
-    selectedIndex === 0 ? parameters.initial_balance : saldoAcumulado[selectedIndex - 1];
 
-  const selectedMonth = monthsAxis[selectedIndex];
-  const entries = computeDailyEntriesForMonth(
-    selectedMonth,
-    parameters,
-    recurringIncomes,
-    recurringExpenses,
-    debts,
-    paymentMethods,
-    transactions,
-    saldoInicioDoMes
-  );
+  function entriesFor(index: number) {
+    const month = monthsAxis[index];
+    const saldoInicioDoMes = index === 0 ? parameters!.initial_balance : saldoAcumulado[index - 1];
+    return computeDailyEntriesForMonth(
+      month,
+      parameters!,
+      recurringIncomes,
+      recurringExpenses,
+      debts,
+      paymentMethods,
+      transactions,
+      saldoInicioDoMes
+    );
+  }
 
   return (
     <div className="min-h-screen">
       <Nav activePath="/fluxo-caixa" />
-      <main className="mx-auto flex max-w-5xl flex-col gap-6 p-6">
+      <main className="mx-auto flex max-w-6xl flex-col gap-6 p-6">
         <h1 className="text-2xl font-semibold">Fluxo de Caixa</h1>
-        <NavegacaoMes monthsAxis={monthsAxis} selectedIndex={selectedIndex} />
-        <TabelaDias entries={entries} resultadoDoMes={resultados[selectedIndex]} />
+        <NavegacaoMes monthsAxis={monthsAxis} leftIndex={leftIndex} rightIndex={rightIndex} />
+        <div className="flex flex-col gap-6 lg:flex-row">
+          <TabelaDias
+            month={monthsAxis[leftIndex]}
+            entries={entriesFor(leftIndex)}
+            resultadoDoMes={resultados[leftIndex]}
+          />
+          {rightIndex != null && (
+            <TabelaDias
+              month={monthsAxis[rightIndex]}
+              entries={entriesFor(rightIndex)}
+              resultadoDoMes={resultados[rightIndex]}
+            />
+          )}
+        </div>
       </main>
     </div>
   );
