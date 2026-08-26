@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg: 255 255 255;
+  --color-fg: 23 23 23;
+  --color-muted: 245 245 245;
+  --color-border: 229 229 229;
+  --color-accent: 37 99 235;
+  --color-positive: 22 163 74;
+  --color-negative: 220 38 38;
+}
+
+.dark {
+  --color-bg: 10 10 10;
+  --color-fg: 245 245 245;
+  --color-muted: 23 23 23;
+  --color-border: 38 38 38;
+  --color-accent: 96 165 250;
+  --color-positive: 74 222 128;
+  --color-negative: 248 113 113;
+}
+
+body {
+  background-color: rgb(var(--color-bg));
+  color: rgb(var(--color-fg));
+}
