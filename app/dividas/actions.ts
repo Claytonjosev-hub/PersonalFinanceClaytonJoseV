@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { revalidateLedgerPaths } from '@/lib/revalidate';
 import {
   createDebt,
   updateDebt,
@@ -43,22 +43,22 @@ export async function saveDebt(formData: FormData) {
   } else {
     await createDebt(input);
   }
-  revalidatePath('/dividas');
+  revalidateLedgerPaths();
 }
 
 export async function closeDebtAction(formData: FormData) {
   await closeDebt(String(formData.get('id')));
-  revalidatePath('/dividas');
+  revalidateLedgerPaths();
 }
 
 export async function reopenDebtAction(formData: FormData) {
   await reopenDebt(String(formData.get('id')));
-  revalidatePath('/dividas');
+  revalidateLedgerPaths();
 }
 
 export async function archiveDebtAction(formData: FormData) {
   await archiveDebt(String(formData.get('id')));
-  revalidatePath('/dividas');
+  revalidateLedgerPaths();
 }
 
 // --- Dívidas sem cronograma ---
@@ -80,10 +80,10 @@ export async function saveDebtWithoutSchedule(formData: FormData) {
   } else {
     await createDebtWithoutSchedule(input);
   }
-  revalidatePath('/dividas');
+  revalidateLedgerPaths();
 }
 
 export async function archiveDebtWithoutScheduleAction(formData: FormData) {
   await archiveDebtWithoutSchedule(String(formData.get('id')));
-  revalidatePath('/dividas');
+  revalidateLedgerPaths();
 }

@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { revalidateLedgerPaths } from '@/lib/revalidate';
 import { updateParameters } from '@/lib/data/parameters';
 import {
   createPaymentMethod,
@@ -25,7 +25,7 @@ export async function saveConfiguracaoGeral(formData: FormData) {
     initial_balance: parseAmount(formData.get('initial_balance')),
     salary_day: Number(formData.get('salary_day')),
   });
-  revalidatePath('/parametros');
+  revalidateLedgerPaths();
 }
 
 export async function savePaymentMethod(formData: FormData) {
@@ -41,12 +41,12 @@ export async function savePaymentMethod(formData: FormData) {
   } else {
     await createPaymentMethod(input);
   }
-  revalidatePath('/parametros');
+  revalidateLedgerPaths();
 }
 
 export async function deletePaymentMethodAction(formData: FormData) {
   await deletePaymentMethod(String(formData.get('id')));
-  revalidatePath('/parametros');
+  revalidateLedgerPaths();
 }
 
 export async function saveCategory(formData: FormData) {
@@ -61,12 +61,12 @@ export async function saveCategory(formData: FormData) {
       color,
     });
   }
-  revalidatePath('/parametros');
+  revalidateLedgerPaths();
 }
 
 export async function archiveCategoryAction(formData: FormData) {
   await archiveCategory(String(formData.get('id')));
-  revalidatePath('/parametros');
+  revalidateLedgerPaths();
 }
 
 export async function saveRecurringIncome(formData: FormData) {
@@ -80,12 +80,12 @@ export async function saveRecurringIncome(formData: FormData) {
   } else {
     await createRecurringIncome(input);
   }
-  revalidatePath('/parametros');
+  revalidateLedgerPaths();
 }
 
 export async function deleteRecurringIncomeAction(formData: FormData) {
   await deleteRecurringIncome(String(formData.get('id')));
-  revalidatePath('/parametros');
+  revalidateLedgerPaths();
 }
 
 export async function saveRecurringExpense(formData: FormData) {
@@ -105,10 +105,10 @@ export async function saveRecurringExpense(formData: FormData) {
   } else {
     await createRecurringExpense(input);
   }
-  revalidatePath('/parametros');
+  revalidateLedgerPaths();
 }
 
 export async function deleteRecurringExpenseAction(formData: FormData) {
   await deleteRecurringExpense(String(formData.get('id')));
-  revalidatePath('/parametros');
+  revalidateLedgerPaths();
 }

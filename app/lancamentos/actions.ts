@@ -1,14 +1,8 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
 import { createTransaction, deleteTransaction, type TransactionInput } from '@/lib/data/transactions';
 import { parseAmount } from '@/lib/format';
-
-function revalidateEverywhereThatShowsTransactions() {
-  revalidatePath('/lancamentos');
-  revalidatePath('/controladoria');
-  revalidatePath('/fluxo-caixa');
-}
+import { revalidateLedgerPaths } from '@/lib/revalidate';
 
 export async function saveTransaction(formData: FormData) {
   const input: TransactionInput = {
@@ -20,10 +14,10 @@ export async function saveTransaction(formData: FormData) {
     notes: (formData.get('notes') as string) || null,
   };
   await createTransaction(input);
-  revalidateEverywhereThatShowsTransactions();
+  revalidateLedgerPaths();
 }
 
 export async function deleteTransactionAction(formData: FormData) {
   await deleteTransaction(String(formData.get('id')));
-  revalidateEverywhereThatShowsTransactions();
+  revalidateLedgerPaths();
 }
