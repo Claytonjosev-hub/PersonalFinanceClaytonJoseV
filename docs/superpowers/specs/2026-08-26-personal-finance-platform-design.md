@@ -52,7 +52,7 @@ compartilhado nesta conversa por segurança.
 Mecanismo escolhido: dois arquivos `.sql` gerados durante a implementação, para colar no **SQL
 Editor do painel do Supabase**:
 
-1. `supabase/migrations/001_schema_and_rls.sql` — as 8 tabelas do modelo de dados (`parameters`,
+1. `supabase/migrations/001_schema_and_rls.sql` — as 9 tabelas do modelo de dados (`parameters`,
    `payment_methods`, `categories`, `recurring_incomes`, `recurring_expenses`, `debts`,
    `debts_without_schedule`, `transactions`, `investments`), políticas de RLS
    (`user_id = auth.uid()`) e o trigger de novo usuário (seção 3). Roda uma vez, antes do primeiro
