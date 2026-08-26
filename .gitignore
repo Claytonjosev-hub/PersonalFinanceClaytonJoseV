@@ -12,7 +12,7 @@ npm-debug.log*
 .env.*.local
 
 # Sensitive local-only data — real financial figures, never versioned
-"Personal Finance (1).xlsx"
+Personal Finance (1).xlsx
 supabase/seed-local/
 *.seed.sql
 
@@ -24,3 +24,4 @@ supabase/seed-local/
 Thumbs.db
 .vscode/
 .idea/
+.claude/
