@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import type { MonthlyDespesas } from '@/lib/ledger/projection';
 import type { MonthKey } from '@/lib/ledger/types';
 import { formatBRL } from '@/lib/format';
@@ -12,8 +12,6 @@ export function Despesas({
   monthsAxis: MonthKey[];
   monthlyDespesas: MonthlyDespesas[];
 }) {
-  const [expanded, setExpanded] = useState<Set<string>>(new Set());
-
   // Union of every payment method (by id, or its display name when the id
   // is null/"sem forma de pagamento") across all months.
   const pmKeys = new Map<string, string>();
@@ -22,6 +20,28 @@ export function Despesas({
       pmKeys.set(pm.paymentMethodId ?? pm.paymentMethodName, pm.paymentMethodName);
     }
   }
+
+  // Cards start expanded — the whole point of this view (per the old
+  // spreadsheet layout) is seeing each card's breakdown immediately, not
+  // hunting for a toggle. Collapsing is still available per-row.
+  const [expanded, setExpanded] = useState<Set<string>>(() => new Set(pmKeys.keys()));
+
+  // Keep newly-appearing payment methods (e.g. a card just added in
+  // Parâmetros) expanded by default too, not just the ones present on mount.
+  useEffect(() => {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      let changed = false;
+      for (const key of pmKeys.keys()) {
+        if (!next.has(key)) {
+          next.add(key);
+          changed = true;
+        }
+      }
+      return changed ? next : prev;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [monthlyDespesas]);
 
   function pmFor(monthIndex: number, key: string) {
     return monthlyDespesas[monthIndex].byPaymentMethod.find(
