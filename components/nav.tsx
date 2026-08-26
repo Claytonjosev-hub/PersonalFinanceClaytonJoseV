@@ -6,6 +6,7 @@ const LINKS = [
   { href: '/', label: 'Início' },
   { href: '/parametros', label: 'Parâmetros' },
   { href: '/dividas', label: 'Dívidas' },
+  { href: '/lancamentos', label: 'Lançamentos' },
 ];
 
 export function Nav({ activePath }: { activePath: string }) {
