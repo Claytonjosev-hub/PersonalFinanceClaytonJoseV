@@ -9,6 +9,12 @@ import {
   archiveDebt,
   type DebtInput,
 } from '@/lib/data/debts';
+import {
+  createDebtWithoutSchedule,
+  updateDebtWithoutSchedule,
+  archiveDebtWithoutSchedule,
+  type DebtWithoutScheduleInput,
+} from '@/lib/data/debts-without-schedule';
 import { parseAmount } from '@/lib/format';
 
 function debtInputFromFormData(formData: FormData): DebtInput {
@@ -52,5 +58,32 @@ export async function reopenDebtAction(formData: FormData) {
 
 export async function archiveDebtAction(formData: FormData) {
   await archiveDebt(String(formData.get('id')));
+  revalidatePath('/dividas');
+}
+
+// --- Dívidas sem cronograma ---
+
+function debtWithoutScheduleInputFromFormData(formData: FormData): DebtWithoutScheduleInput {
+  return {
+    description: String(formData.get('description')),
+    creditor: String(formData.get('creditor')),
+    open_balance: parseAmount(formData.get('open_balance')),
+    notes: (formData.get('notes') as string) || null,
+  };
+}
+
+export async function saveDebtWithoutSchedule(formData: FormData) {
+  const id = formData.get('id');
+  const input = debtWithoutScheduleInputFromFormData(formData);
+  if (id) {
+    await updateDebtWithoutSchedule(String(id), input);
+  } else {
+    await createDebtWithoutSchedule(input);
+  }
+  revalidatePath('/dividas');
+}
+
+export async function archiveDebtWithoutScheduleAction(formData: FormData) {
+  await archiveDebtWithoutSchedule(String(formData.get('id')));
   revalidatePath('/dividas');
 }

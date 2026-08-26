@@ -5,10 +5,13 @@ import { getParameters } from '@/lib/data/parameters';
 import { listPaymentMethods } from '@/lib/data/payment-methods';
 import { listCategories } from '@/lib/data/categories';
 import { listDebts } from '@/lib/data/debts';
+import { listDebtsWithoutSchedule } from '@/lib/data/debts-without-schedule';
 import { getMonthsAxis, monthKeyFromDate } from '@/lib/ledger/months';
 import { CadastroDividas } from './cadastro-dividas';
 import { Cronograma } from './cronograma';
 import { TotaisPorFormaPagamento } from './totais-por-forma-pagamento';
+import { SemCronograma } from './sem-cronograma';
+import { EndividamentoTotal } from './endividamento-total';
 
 export default async function DividasPage() {
   const supabase = await createClient();
@@ -17,11 +20,12 @@ export default async function DividasPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect('/login');
 
-  const [parameters, paymentMethods, categories, debts] = await Promise.all([
+  const [parameters, paymentMethods, categories, debts, debtsWithoutSchedule] = await Promise.all([
     getParameters(),
     listPaymentMethods(),
     listCategories(),
     listDebts(),
+    listDebtsWithoutSchedule(),
   ]);
 
   if (!parameters) redirect('/');
@@ -50,6 +54,13 @@ export default async function DividasPage() {
           monthsAxis={monthsAxis}
           currentMonth={currentMonth}
           paymentMethods={paymentMethods}
+        />
+        <SemCronograma debts={debtsWithoutSchedule} />
+        <EndividamentoTotal
+          debts={debts}
+          debtsWithoutSchedule={debtsWithoutSchedule}
+          monthsAxis={monthsAxis}
+          currentMonth={currentMonth}
         />
       </main>
     </div>
