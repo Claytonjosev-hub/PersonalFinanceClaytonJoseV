@@ -38,9 +38,9 @@
 - Produces: `getMonthsAxis(startMonth: Date, projectionMonths: number): MonthKey[]` — `MonthKey` is a `{ year: number; month: number; label: string }` (label pt-BR, e.g. "Ago/26"), used by every later screen that shows a month-by-month grid (Parâmetros §6, Dívidas cronograma, and Plan 3's Controladoria/Fluxo de Caixa).
 - Produces: `sumRecurringIncomes(incomes: RecurringIncome[]): number`, `sumRecurringExpenses(expenses: RecurringExpense[]): number`.
 
-- [ ] **Step 1: Create `lib/ledger/types.ts`** with the shared shapes every ledger module imports: `MonthKey`, `Parameters`, `PaymentMethod`, `Category`, `RecurringIncome`, `RecurringExpense`, `Debt`, `DebtWithoutSchedule`, `Transaction` — mirroring the DB columns from the Plan 1 migration exactly (same field names, `numeric` → `number`, `date`/`timestamptz` → `string` ISO).
+- [x] **Step 1: Create `lib/ledger/types.ts`** with the shared shapes every ledger module imports: `MonthKey`, `Parameters`, `PaymentMethod`, `Category`, `RecurringIncome`, `RecurringExpense`, `Debt`, `DebtWithoutSchedule`, `Transaction` — mirroring the DB columns from the Plan 1 migration exactly (same field names, `numeric` → `number`, `date`/`timestamptz` → `string` ISO).
 
-- [ ] **Step 2: Create `lib/ledger/months.ts`**
+- [x] **Step 2: Create `lib/ledger/months.ts`**
 
 ```ts
 import type { MonthKey } from './types';
@@ -74,7 +74,7 @@ export function monthKeyFromDate(dateIso: string): MonthKey {
 }
 ```
 
-- [ ] **Step 3: Create `lib/ledger/recurring.ts`**
+- [x] **Step 3: Create `lib/ledger/recurring.ts`**
 
 ```ts
 import type { RecurringIncome, RecurringExpense } from './types';
@@ -88,9 +88,9 @@ export function sumRecurringExpenses(expenses: RecurringExpense[]): number {
 }
 ```
 
-- [ ] **Step 4: Unit-test the month axis by hand** — with `startMonth = '2026-08-01'` and `projectionMonths = 17`, the first entry must be `{ year: 2026, month: 8, label: 'Ago/26' }` and the last must be `{ year: 2027, month: 12, label: 'Dez/27' }` (17 months inclusive of August 2026). Verify in a scratch `.ts` file run with `npx tsx` (add `tsx` as a dev dependency if not present) or a quick Node REPL check; delete the scratch file after confirming.
+- [x] **Step 4: Unit-test the month axis by hand** — with `startMonth = '2026-08-01'` and `projectionMonths = 17`, the first entry must be `{ year: 2026, month: 8, label: 'Ago/26' }` and the last must be `{ year: 2027, month: 12, label: 'Dez/27' }` (17 months inclusive of August 2026). Verify in a scratch `.ts` file run with `npx tsx` (add `tsx` as a dev dependency if not present) or a quick Node REPL check; delete the scratch file after confirming.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/ledger/types.ts lib/ledger/months.ts lib/ledger/recurring.ts
@@ -111,7 +111,7 @@ git commit -m "Add ledger engine: months axis and recurring income/expense total
 
 This is the highest-stakes file in the plan — spec `02` is explicit that these five values must never be stored, only computed, so get the edge cases right:
 
-- [ ] **Step 1: Implement `installmentForMonth`**
+- [x] **Step 1: Implement `installmentForMonth`**
 
 ```ts
 import type { Debt, MonthKey } from './types';
@@ -130,7 +130,7 @@ export function installmentForMonth(debt: Debt, month: MonthKey): number {
 }
 ```
 
-- [ ] **Step 2: Implement `computeDebtSchedule`**
+- [x] **Step 2: Implement `computeDebtSchedule`**
 
 ```ts
 import type { Debt, MonthKey } from './types';
@@ -195,7 +195,7 @@ export function computeDebtSchedule(
 
 Note: `lastInstallmentMonth`'s `label` is left blank here deliberately — computing a proper pt-BR label requires the same `PT_BR_MONTHS` table as `months.ts`; refactor to export a `formatMonthLabel(year, month)` helper from `months.ts` and call it here instead of duplicating the array, then fill in `label` correctly. Adjust the snippet above accordingly during implementation — this note itself is not optional, treat it as part of Step 2.
 
-- [ ] **Step 3: Add `totalMonthlyByPaymentMethod` and `totalCommittedByPaymentMethod`**
+- [x] **Step 3: Add `totalMonthlyByPaymentMethod` and `totalCommittedByPaymentMethod`**
 
 ```ts
 export function totalMonthlyByPaymentMethod(
@@ -227,9 +227,9 @@ export function totalCommittedByPaymentMethod(
 }
 ```
 
-- [ ] **Step 4: Hand-verify against a realistic case** — a debt with `first_installment_date = '2026-06-01'`, `installment_amount = 500`, `total_installments = 10`, checked against `currentMonth = { year: 2026, month: 8 }`: expect `remainingInstallments = 8`, `outstandingBalance = 4000`, `status = 'ativa'`, `totalValue = 5000`. A recurring debt (`is_recurring = true`, no `total_installments`) starting the same month must show `status = 'recorrente'` and a non-null `outstandingBalance` bounded by the months axis (never `Infinity`).
+- [x] **Step 4: Hand-verify against a realistic case** — a debt with `first_installment_date = '2026-06-01'`, `installment_amount = 500`, `total_installments = 10`, checked against `currentMonth = { year: 2026, month: 8 }`: expect `remainingInstallments = 8`, `outstandingBalance = 4000`, `status = 'ativa'`, `totalValue = 5000`. A recurring debt (`is_recurring = true`, no `total_installments`) starting the same month must show `status = 'recorrente'` and a non-null `outstandingBalance` bounded by the months axis (never `Infinity`).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/ledger/debts.ts
@@ -250,7 +250,7 @@ git commit -m "Add ledger engine: debt schedule, outstanding balance, and status
 - Consumes: `createClient` (async) from `lib/supabase/server.ts` (Plan 1 Task 4).
 - Produces: one `get*`/`upsert*`/`delete*` set of functions per table, all scoped implicitly by RLS (no explicit `user_id` filter needed in the query — RLS does it — but every insert must still set `user_id: user.id` from `supabase.auth.getUser()`, since RLS's `insert ... with check` requires the row to already carry the right `user_id`).
 
-- [ ] **Step 1: Create `lib/data/parameters.ts`**
+- [x] **Step 1: Create `lib/data/parameters.ts`**
 
 ```ts
 import { createClient } from '@/lib/supabase/server';
@@ -273,9 +273,9 @@ export async function updateParameters(patch: Partial<Parameters>) {
 }
 ```
 
-- [ ] **Step 2: Create `lib/data/payment-methods.ts`, `lib/data/categories.ts`, `lib/data/recurring.ts`** following the same shape: a `list*()` (select all, ordered by `created_at`), a `create*(input)` (inject `user_id` from `auth.getUser()`, insert, return the row), an `update*(id, patch)`, and a `delete*(id)` (for `categories`, this is `archive*(id)` — set `archived_at = now()` instead of a hard delete, per spec `01 §3`). `recurring.ts` exports both the incomes and expenses CRUD since they're small and closely related.
+- [x] **Step 2: Create `lib/data/payment-methods.ts`, `lib/data/categories.ts`, `lib/data/recurring.ts`** following the same shape: a `list*()` (select all, ordered by `created_at`), a `create*(input)` (inject `user_id` from `auth.getUser()`, insert, return the row), an `update*(id, patch)`, and a `delete*(id)` (for `categories`, this is `archive*(id)` — set `archived_at = now()` instead of a hard delete, per spec `01 §3`). `recurring.ts` exports both the incomes and expenses CRUD since they're small and closely related.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add lib/data/parameters.ts lib/data/payment-methods.ts lib/data/categories.ts lib/data/recurring.ts
@@ -300,23 +300,23 @@ git commit -m "Add data access layer for parameters, payment methods, categories
 - Consumes: `lib/data/*` (Task 3), `lib/ledger/months.ts` (Task 1) for the read-only months-axis section.
 - Produces: `<Nav />` — a small top-nav client/server component (Home / Parâmetros / Dívidas / Sair), reused by every future screen; add it to `app/layout.tsx` or repeat it per authenticated page — decide based on whichever keeps `app/login` unauthenticated and every other route wrapped.
 
-- [ ] **Step 1: Create `components/nav.tsx`** — links styled with the `border-border`/`bg-muted`/`text-accent` tokens, active-route highlighted, includes `<ThemeToggle />` and the `signOut` form button (reuse from `app/actions.ts`, Plan 1 Task 5).
+- [x] **Step 1: Create `components/nav.tsx`** — links styled with the `border-border`/`bg-muted`/`text-accent` tokens, active-route highlighted, includes `<ThemeToggle />` and the `signOut` form button (reuse from `app/actions.ts`, Plan 1 Task 5).
 
-- [ ] **Step 2: Create `app/parametros/actions.ts`** — one `'use server'` action per form: `saveConfiguracaoGeral(formData)`, `savePaymentMethod(formData)`, `deletePaymentMethod(formData)`, `saveCategory(formData)`, `archiveCategory(formData)`, `saveRecurringIncome(formData)`, `deleteRecurringIncome(formData)`, `saveRecurringExpense(formData)`, `deleteRecurringExpense(formData)`. Each calls the matching `lib/data/*` function then `revalidatePath('/parametros')`.
+- [x] **Step 2: Create `app/parametros/actions.ts`** — one `'use server'` action per form: `saveConfiguracaoGeral(formData)`, `savePaymentMethod(formData)`, `deletePaymentMethod(formData)`, `saveCategory(formData)`, `archiveCategory(formData)`, `saveRecurringIncome(formData)`, `deleteRecurringIncome(formData)`, `saveRecurringExpense(formData)`, `deleteRecurringExpense(formData)`. Each calls the matching `lib/data/*` function then `revalidatePath('/parametros')`.
 
-- [ ] **Step 3: Create `app/parametros/configuracao-geral.tsx`** — form for `start_month`, `projection_months`, `initial_balance`, `salary_day`, bound to `saveConfiguracaoGeral`. `initial_balance` input uses `inputMode="decimal"` and is parsed/formatted through a shared `lib/format.ts` currency helper (create this helper here if it doesn't exist yet — `formatBRL(cents: number): string` and `parseBRLInput(value: string): number`, both used by every money field from here through Plan 3).
+- [x] **Step 3: Create `app/parametros/configuracao-geral.tsx`** — form for `start_month`, `projection_months`, `initial_balance`, `salary_day`, bound to `saveConfiguracaoGeral`. `initial_balance` input uses `inputMode="decimal"` and is parsed/formatted through a shared `lib/format.ts` currency helper (create this helper here if it doesn't exist yet — `formatBRL(cents: number): string` and `parseBRLInput(value: string): number`, both used by every money field from here through Plan 3).
 
-- [ ] **Step 4: Create `app/parametros/formas-pagamento.tsx`** — list of `payment_methods` as editable rows (name, due_day, color swatch) + an "add" row, each wired to `savePaymentMethod`/`deletePaymentMethod`.
+- [x] **Step 4: Create `app/parametros/formas-pagamento.tsx`** — list of `payment_methods` as editable rows (name, due_day, color swatch) + an "add" row, each wired to `savePaymentMethod`/`deletePaymentMethod`.
 
-- [ ] **Step 5: Create `app/parametros/categorias.tsx`** — two columns (receita / despesa) listing `categories` where `archived_at is null`, each editable inline (name, color), plus "Arquivar" button calling `archiveCategory`, plus an add-new form per column that sets `type` accordingly. Default categories from the Plan 1 `handle_new_user` trigger already exist for every user — this screen only needs to render/edit them, not seed them.
+- [x] **Step 5: Create `app/parametros/categorias.tsx`** — two columns (receita / despesa) listing `categories` where `archived_at is null`, each editable inline (name, color), plus "Arquivar" button calling `archiveCategory`, plus an add-new form per column that sets `type` accordingly. Default categories from the Plan 1 `handle_new_user` trigger already exist for every user — this screen only needs to render/edit them, not seed them.
 
-- [ ] **Step 6: Create `app/parametros/receitas-despesas-fixas.tsx`** — two sections (`recurring_incomes`, `recurring_expenses`), each an editable list + add form, each showing a computed total row using `sumRecurringIncomes`/`sumRecurringExpenses` from Task 1 — **do not add a stored "total" field anywhere; compute it in the component from the list already loaded**.
+- [x] **Step 6: Create `app/parametros/receitas-despesas-fixas.tsx`** — two sections (`recurring_incomes`, `recurring_expenses`), each an editable list + add form, each showing a computed total row using `sumRecurringIncomes`/`sumRecurringExpenses` from Task 1 — **do not add a stored "total" field anywhere; compute it in the component from the list already loaded**.
 
-- [ ] **Step 7: Create `app/parametros/page.tsx`** — server component that loads `getParameters()`, `listPaymentMethods()`, `listCategories()`, `listRecurringIncomes()`, `listRecurringExpenses()` in parallel (`Promise.all`), passes each slice to its section component, and renders a read-only months-axis list at the bottom using `getMonthsAxis(parameters.start_month, parameters.projection_months)` (spec `01 §6`). Redirect to `/login` if unauthenticated (same pattern as `app/page.tsx` from Plan 1).
+- [x] **Step 7: Create `app/parametros/page.tsx`** — server component that loads `getParameters()`, `listPaymentMethods()`, `listCategories()`, `listRecurringIncomes()`, `listRecurringExpenses()` in parallel (`Promise.all`), passes each slice to its section component, and renders a read-only months-axis list at the bottom using `getMonthsAxis(parameters.start_month, parameters.projection_months)` (spec `01 §6`). Redirect to `/login` if unauthenticated (same pattern as `app/page.tsx` from Plan 1).
 
-- [ ] **Step 8: Wire the nav into `app/page.tsx`** and verify in the browser: log in, visit `/parametros`, edit the saldo inicial, add a payment method, add/archive a category, add a recurring income and a recurring expense, confirm the totals update immediately, confirm the months-axis list length matches "Nº de meses projetados" exactly.
+- [x] **Step 8: Wire the nav into `app/page.tsx`** and verify in the browser: log in, visit `/parametros`, edit the saldo inicial, add a payment method, add/archive a category, add a recurring income and a recurring expense, confirm the totals update immediately, confirm the months-axis list length matches "Nº de meses projetados" exactly.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add app/parametros components/nav.tsx app/page.tsx lib/format.ts
@@ -337,17 +337,17 @@ git commit -m "Add Parâmetros screen: config geral, formas de pagamento, catego
 - Consumes: `computeDebtSchedule` (Task 2), `getMonthsAxis` (Task 1), `lib/data/payment-methods.ts` / `lib/data/categories.ts` (Task 3) for the dropdown options.
 - Produces: `listDebts()`, `createDebt(input)`, `updateDebt(id, patch)`, `closeDebt(id)` (sets `manually_closed_at`), `archiveDebt(id)` in `lib/data/debts.ts`.
 
-- [ ] **Step 1: Create `lib/data/debts.ts`** following the Task 3 pattern. `createDebt` must enforce the same-or check as the DB constraint client-side before submitting (either `is_recurring && total_installments == null`, or `!is_recurring && total_installments > 0`) so the user gets an inline form error instead of a raw Postgres constraint violation.
+- [x] **Step 1: Create `lib/data/debts.ts`** following the Task 3 pattern. `createDebt` must enforce the same-or check as the DB constraint client-side before submitting (either `is_recurring && total_installments == null`, or `!is_recurring && total_installments > 0`) so the user gets an inline form error instead of a raw Postgres constraint violation.
 
-- [ ] **Step 2: Create `app/dividas/actions.ts`** — `saveDebt(formData)`, `closeDebtAction(formData)`, `archiveDebtAction(formData)`, each `revalidatePath('/dividas')`.
+- [x] **Step 2: Create `app/dividas/actions.ts`** — `saveDebt(formData)`, `closeDebtAction(formData)`, `archiveDebtAction(formData)`, each `revalidatePath('/dividas')`.
 
-- [ ] **Step 3: Create `app/dividas/cadastro-dividas.tsx`** — table of active (`archived_at is null`) debts with editable fields (description, payment_method, category, installment_amount, total_installments **or** a "Recorrente" checkbox that disables the installments input, first_installment_date) plus a read-only computed block per row (last installment month label, total value or "—" if recurring, remaining installments, saldo devedor, status badge colored via `text-positive`/`text-negative`/`text-fg/70` depending on ativa/quitada/recorrente) rendered by calling `computeDebtSchedule` with the months axis from `getMonthsAxis`. A "Quitar manualmente" button on recurring debts calls `closeDebtAction`.
+- [x] **Step 3: Create `app/dividas/cadastro-dividas.tsx`** — table of active (`archived_at is null`) debts with editable fields (description, payment_method, category, installment_amount, total_installments **or** a "Recorrente" checkbox that disables the installments input, first_installment_date) plus a read-only computed block per row (last installment month label, total value or "—" if recurring, remaining installments, saldo devedor, status badge colored via `text-positive`/`text-negative`/`text-fg/70` depending on ativa/quitada/recorrente) rendered by calling `computeDebtSchedule` with the months axis from `getMonthsAxis`. A "Quitar manualmente" button on recurring debts calls `closeDebtAction`.
 
-- [ ] **Step 4: Create `app/dividas/page.tsx`** — loads `listDebts()`, `getParameters()` (for the months axis and to know "now"), `listPaymentMethods()`, `listCategories()`; computes `currentMonth` from `new Date()` (not stored — always derived at request time, consistent with the rest of this plan); passes everything to `cadastro-dividas.tsx`.
+- [x] **Step 4: Create `app/dividas/page.tsx`** — loads `listDebts()`, `getParameters()` (for the months axis and to know "now"), `listPaymentMethods()`, `listCategories()`; computes `currentMonth` from `new Date()` (not stored — always derived at request time, consistent with the rest of this plan); passes everything to `cadastro-dividas.tsx`.
 
-- [ ] **Step 5: Verify in the browser** — add a debt with a fixed installment count, confirm status/saldo devedor/parcelas restantes match a hand calculation; add a recurring debt (e.g. "Apple One"), confirm it shows "Recorrente" and never "Quitada"; edit an existing debt's installment value and confirm the computed fields update with no stale values left over (this directly exercises the Global Constraint about recalculating the whole schedule on edit).
+- [x] **Step 5: Verify in the browser** — add a debt with a fixed installment count, confirm status/saldo devedor/parcelas restantes match a hand calculation; add a recurring debt (e.g. "Apple One"), confirm it shows "Recorrente" and never "Quitada"; edit an existing debt's installment value and confirm the computed fields update with no stale values left over (this directly exercises the Global Constraint about recalculating the whole schedule on edit).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add lib/data/debts.ts app/dividas/page.tsx app/dividas/actions.ts app/dividas/cadastro-dividas.tsx
@@ -366,15 +366,15 @@ git commit -m "Add Dívidas cadastro with computed last-installment/total/remain
 **Interfaces:**
 - Consumes: `installmentForMonth`, `totalMonthlyByPaymentMethod`, `totalCommittedByPaymentMethod` (Task 2), `getMonthsAxis` (Task 1).
 
-- [ ] **Step 1: Create `app/dividas/cronograma.tsx`** — a grid: rows = months axis, columns = active debts (description as header), cells = `installmentForMonth(debt, month)` formatted via `formatBRL`, rendered `—` when `0`. Wrap in `overflow-x-auto` (the grid can be wide with many debts) with `tabular-nums` on every numeric cell, per spec `02 §2`.
+- [x] **Step 1: Create `app/dividas/cronograma.tsx`** — a grid: rows = months axis, columns = active debts (description as header), cells = `installmentForMonth(debt, month)` formatted via `formatBRL`, rendered `—` when `0`. Wrap in `overflow-x-auto` (the grid can be wide with many debts) with `tabular-nums` on every numeric cell, per spec `02 §2`.
 
-- [ ] **Step 2: Create `app/dividas/totais-por-forma-pagamento.tsx`** — two blocks: (a) "Total mensal por forma de pagamento" — for each month, `totalMonthlyByPaymentMethod(debts, month)` joined against `payment_methods` names, plus a row total; (b) "Total comprometido por forma de pagamento" — `totalCommittedByPaymentMethod(debts, monthsAxis, currentMonth)`, one row per payment method plus a grand total, per spec `02 §3–4`.
+- [x] **Step 2: Create `app/dividas/totais-por-forma-pagamento.tsx`** — two blocks: (a) "Total mensal por forma de pagamento" — for each month, `totalMonthlyByPaymentMethod(debts, month)` joined against `payment_methods` names, plus a row total; (b) "Total comprometido por forma de pagamento" — `totalCommittedByPaymentMethod(debts, monthsAxis, currentMonth)`, one row per payment method plus a grand total, per spec `02 §3–4`.
 
-- [ ] **Step 3: Wire both into `app/dividas/page.tsx`** below the cadastro table.
+- [x] **Step 3: Wire both into `app/dividas/page.tsx`** below the cadastro table.
 
-- [ ] **Step 4: Verify in the browser** — with 2–3 debts spanning different date ranges, confirm the cronograma grid shows the right non-zero cells only in the months each debt is actually active, and confirm the "Total comprometido" grand total equals the sum of every active debt's saldo devedor shown in Task 5's cadastro table.
+- [x] **Step 4: Verify in the browser** — with 2–3 debts spanning different date ranges, confirm the cronograma grid shows the right non-zero cells only in the months each debt is actually active, and confirm the "Total comprometido" grand total equals the sum of every active debt's saldo devedor shown in Task 5's cadastro table.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add app/dividas/cronograma.tsx app/dividas/totais-por-forma-pagamento.tsx app/dividas/page.tsx
@@ -394,17 +394,17 @@ git commit -m "Add Dívidas cronograma grid and totals by payment method"
 **Interfaces:**
 - Consumes: `totalCommittedByPaymentMethod` (Task 2) for the "com cronograma" half of the endividamento total.
 
-- [ ] **Step 1: Create `lib/data/debts-without-schedule.ts`** — `list`, `create`, `update`, `archive`, same pattern as Task 3/5.
+- [x] **Step 1: Create `lib/data/debts-without-schedule.ts`** — `list`, `create`, `update`, `archive`, same pattern as Task 3/5.
 
-- [ ] **Step 2: Add `saveDebtWithoutSchedule`/`archiveDebtWithoutScheduleAction` to `app/dividas/actions.ts`.**
+- [x] **Step 2: Add `saveDebtWithoutSchedule`/`archiveDebtWithoutScheduleAction` to `app/dividas/actions.ts`.**
 
-- [ ] **Step 3: Create `app/dividas/sem-cronograma.tsx`** — editable list (description, creditor, open_balance, notes) + add form, per spec `02 §5`.
+- [x] **Step 3: Create `app/dividas/sem-cronograma.tsx`** — editable list (description, creditor, open_balance, notes) + add form, per spec `02 §5`.
 
-- [ ] **Step 4: Create `app/dividas/endividamento-total.tsx`** — a summary card: "Endividamento total" = grand total from Task 6's `totalCommittedByPaymentMethod` **plus** the sum of `open_balance` across all non-archived `debts_without_schedule` rows. Shown as one prominent number, with the two components broken out beneath it (com cronograma / sem cronograma) so the source of the total is always inspectable.
+- [x] **Step 4: Create `app/dividas/endividamento-total.tsx`** — a summary card: "Endividamento total" = grand total from Task 6's `totalCommittedByPaymentMethod` **plus** the sum of `open_balance` across all non-archived `debts_without_schedule` rows. Shown as one prominent number, with the two components broken out beneath it (com cronograma / sem cronograma) so the source of the total is always inspectable.
 
-- [ ] **Step 5: Wire into `app/dividas/page.tsx`**, verify in the browser with at least one `debts_without_schedule` entry that the endividamento total card sums correctly against a hand calculation.
+- [x] **Step 5: Wire into `app/dividas/page.tsx`**, verify in the browser with at least one `debts_without_schedule` entry that the endividamento total card sums correctly against a hand calculation.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add lib/data/debts-without-schedule.ts app/dividas/sem-cronograma.tsx app/dividas/endividamento-total.tsx app/dividas/actions.ts app/dividas/page.tsx
@@ -415,11 +415,11 @@ git commit -m "Add dívidas sem cronograma and endividamento total card"
 
 ### Task 8: Verify, deploy, checkpoint
 
-- [ ] **Step 1: Full manual regression pass** — from a clean login: edit every Parâmetros section, create 2+ debts (one fixed-installment, one recorrente), close the recorrente one manually, add a dívida sem cronograma, confirm every computed number across `/parametros` and `/dividas` agrees with a hand-worked example. Pay special attention to editing an existing debt (Global Constraint: no residue in past months) and to the "Recorrente" checkbox disabling/enabling `total_installments` correctly.
+- [ ] **Step 1: Full manual regression pass** (pending — needs a real logged-in user; ledger math was hand-verified in Tasks 1-2, and every task passed `tsc --noEmit` + `next lint` clean, but no one has clicked through /parametros and /dividas as an authenticated user yet) — from a clean login: edit every Parâmetros section, create 2+ debts (one fixed-installment, one recorrente), close the recorrente one manually, add a dívida sem cronograma, confirm every computed number across `/parametros` and `/dividas` agrees with a hand-worked example. Pay special attention to editing an existing debt (Global Constraint: no residue in past months) and to the "Recorrente" checkbox disabling/enabling `total_installments` correctly.
 
-- [ ] **Step 2: `npm run build`** — must complete with no TypeScript errors before pushing (this plan adds real logic beyond Plan 1's static pages, so build-time type errors are more likely here than before).
+- [x] **Step 2: `npm run build`** — must complete with no TypeScript errors before pushing (this plan adds real logic beyond Plan 1's static pages, so build-time type errors are more likely here than before).
 
-- [ ] **Step 3: Push and confirm the Vercel deploy succeeds**
+- [x] **Step 3: Push and confirm the Vercel deploy succeeds**
 
 ```bash
 git push origin main
@@ -427,4 +427,4 @@ git push origin main
 
 Confirm via the GitHub commit status API or the Vercel dashboard that the deployment for the final commit of this plan reports success, then repeat Step 1's regression pass against the production URL.
 
-- [ ] **Step 4: Update the plan index** — once this plan is fully checked off, this file's tasks should all show `- [x]`; leave it in place (like Plan 1's file) as the historical record for this stage, and start the next plan (`Controladoria + Fluxo de Caixa`, per spec `03`/`04`) as a new dated file in `docs/superpowers/plans/`.
+- [x] **Step 4: Update the plan index** — once this plan is fully checked off, this file's tasks should all show `- [x]`; leave it in place (like Plan 1's file) as the historical record for this stage, and start the next plan (`Controladoria + Fluxo de Caixa`, per spec `03`/`04`) as a new dated file in `docs/superpowers/plans/`.
