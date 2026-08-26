@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { signIn } from './actions';
@@ -45,15 +44,9 @@ export default async function LoginPage({
             className="w-full rounded border border-border bg-bg px-3 py-2"
           />
         </div>
-        <button type="submit" className="w-full rounded bg-accent px-3 py-2 text-white">
+        <button type="submit" className="w-full rounded bg-accent px-3 py-2 text-accent-foreground">
           Entrar
         </button>
-        <p className="text-sm text-fg/70">
-          Não tem conta?{' '}
-          <Link href="/signup" className="text-accent underline">
-            Cadastre-se
-          </Link>
-        </p>
       </form>
     </main>
   );
