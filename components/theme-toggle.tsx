@@ -41,7 +41,7 @@ export function ThemeToggle() {
           aria-pressed={choice === option.value}
           className={
             'rounded-full px-3 py-1 transition-colors ' +
-            (choice === option.value ? 'bg-accent text-white' : 'text-fg/70 hover:bg-muted')
+            (choice === option.value ? 'bg-accent text-accent-foreground' : 'text-fg/70 hover:bg-muted')
           }
         >
           {option.label}
