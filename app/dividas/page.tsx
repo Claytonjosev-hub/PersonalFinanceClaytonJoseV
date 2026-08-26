@@ -7,6 +7,8 @@ import { listCategories } from '@/lib/data/categories';
 import { listDebts } from '@/lib/data/debts';
 import { getMonthsAxis, monthKeyFromDate } from '@/lib/ledger/months';
 import { CadastroDividas } from './cadastro-dividas';
+import { Cronograma } from './cronograma';
+import { TotaisPorFormaPagamento } from './totais-por-forma-pagamento';
 
 export default async function DividasPage() {
   const supabase = await createClient();
@@ -41,6 +43,13 @@ export default async function DividasPage() {
           currentMonth={currentMonth}
           paymentMethods={paymentMethods}
           categories={despesaCategorias}
+        />
+        <Cronograma debts={debts} monthsAxis={monthsAxis} />
+        <TotaisPorFormaPagamento
+          debts={debts}
+          monthsAxis={monthsAxis}
+          currentMonth={currentMonth}
+          paymentMethods={paymentMethods}
         />
       </main>
     </div>
