@@ -29,9 +29,9 @@
 **Interfaces:**
 - Produces: `listInvestments()` (active only), `createInvestment(input)`, `updateInvestment(id, patch)`, `archiveInvestment(id)`.
 
-- [ ] **Step 1: Create `lib/data/investments.ts`** following the established pattern (`lib/data/debts.ts` is the closest precedent — same `user_id` injection on create, same `archived_at` soft-delete). Input type covers every column from the Plan 1 migration's `investments` table: `type` (`'renda_fixa' | 'renda_variavel' | 'reserva_emergencia'`), `description`, `institution`, `invested_amount`, `current_amount`, `rate`, `index_type`, `liquidity`, `grace_period`, `applied_at`, `maturity_at`, `ticker`, `quantity`, `average_price`.
+- [x] **Step 1: Create `lib/data/investments.ts`** following the established pattern (`lib/data/debts.ts` is the closest precedent — same `user_id` injection on create, same `archived_at` soft-delete). Input type covers every column from the Plan 1 migration's `investments` table: `type` (`'renda_fixa' | 'renda_variavel' | 'reserva_emergencia'`), `description`, `institution`, `invested_amount`, `current_amount`, `rate`, `index_type`, `liquidity`, `grace_period`, `applied_at`, `maturity_at`, `ticker`, `quantity`, `average_price`.
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add lib/data/investments.ts
@@ -54,21 +54,21 @@ git commit -m "Add investments data layer"
 **Interfaces:**
 - Consumes: `lib/data/investments.ts` (Task 1).
 
-- [ ] **Step 1: Create `app/investimentos/actions.ts`** — `saveInvestment(formData)` (branches on a hidden `type` field to know which optional fields to read — e.g. renda variável reads `ticker`/`quantity`/`average_price` and ignores `rate`/`index_type`; renda fixa reads `rate`/`index_type`/`liquidity`/`grace_period`/`maturity_at`; reserva de emergência only reads `description`/`institution`/`current_amount`/`liquidity`), `archiveInvestmentAction(formData)`, both `revalidatePath('/investimentos')`.
+- [x] **Step 1: Create `app/investimentos/actions.ts`** — `saveInvestment(formData)` (branches on a hidden `type` field to know which optional fields to read — e.g. renda variável reads `ticker`/`quantity`/`average_price` and ignores `rate`/`index_type`; renda fixa reads `rate`/`index_type`/`liquidity`/`grace_period`/`maturity_at`; reserva de emergência only reads `description`/`institution`/`current_amount`/`liquidity`), `archiveInvestmentAction(formData)`, both `revalidatePath('/investimentos')`.
 
-- [ ] **Step 2: Create `app/investimentos/resumo.tsx`** — summary cards at the top: total investido, total atual, and rentabilidade acumulada (`current − invested`, colored `text-positive`/`text-negative` by sign) — each broken out per type (Renda Fixa / Renda Variável / Reserva de Emergência) plus a grand total, per spec `05` "Card de resumo no topo".
+- [x] **Step 2: Create `app/investimentos/resumo.tsx`** — summary cards at the top: total investido, total atual, and rentabilidade acumulada (`current − invested`, colored `text-positive`/`text-negative` by sign) — each broken out per type (Renda Fixa / Renda Variável / Reserva de Emergência) plus a grand total, per spec `05` "Card de resumo no topo".
 
-- [ ] **Step 3: Create `app/investimentos/renda-fixa.tsx`** — table/list of `type = 'renda_fixa'` investments: descrição, instituição, valor investido, valor atual, taxa, indexador, liquidez, carência, data de aplicação, data de vencimento — editable inline (reuse the row-form pattern from `app/dividas/cadastro-dividas.tsx`) + an add form. Rentabilidade (`current - invested`) shown as a computed, non-editable column per row.
+- [x] **Step 3: Create `app/investimentos/renda-fixa.tsx`** — table/list of `type = 'renda_fixa'` investments: descrição, instituição, valor investido, valor atual, taxa, indexador, liquidez, carência, data de aplicação, data de vencimento — editable inline (reuse the row-form pattern from `app/dividas/cadastro-dividas.tsx`) + an add form. Rentabilidade (`current - invested`) shown as a computed, non-editable column per row.
 
-- [ ] **Step 4: Create `app/investimentos/renda-variavel.tsx`** — descrição/ticker, instituição, quantidade, preço médio, valor atual, rentabilidade computed as `current_amount - (quantity * average_price)` when both are set.
+- [x] **Step 4: Create `app/investimentos/renda-variavel.tsx`** — descrição/ticker, instituição, quantidade, preço médio, valor atual, rentabilidade computed as `current_amount - (quantity * average_price)` when both are set.
 
-- [ ] **Step 5: Create `app/investimentos/reserva-emergencia.tsx`** — the simplest of the three: descrição, instituição, valor atual, liquidez only.
+- [x] **Step 5: Create `app/investimentos/reserva-emergencia.tsx`** — the simplest of the three: descrição, instituição, valor atual, liquidez only.
 
-- [ ] **Step 6: Create `app/investimentos/page.tsx`** — loads `listInvestments()`, partitions by `type` client-side (three arrays), renders `Resumo` then the three sections. Add the nav link `{ href: '/investimentos', label: 'Investimentos' }` in `components/nav.tsx`.
+- [x] **Step 6: Create `app/investimentos/page.tsx`** — loads `listInvestments()`, partitions by `type` client-side (three arrays), renders `Resumo` then the three sections. Add the nav link `{ href: '/investimentos', label: 'Investimentos' }` in `components/nav.tsx`.
 
-- [ ] **Step 7: Verify in the browser** — add one investment of each type, confirm the summary card totals match a hand calculation, edit a renda fixa's valor atual and confirm rentabilidade recalculates with no page-level "recalculate" step, archive one and confirm it drops out of the active total.
+- [x] **Step 7: Verify in the browser** — add one investment of each type, confirm the summary card totals match a hand calculation, edit a renda fixa's valor atual and confirm rentabilidade recalculates with no page-level "recalculate" step, archive one and confirm it drops out of the active total.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add app/investimentos components/nav.tsx
@@ -79,9 +79,9 @@ git commit -m "Add Investimentos screen: renda fixa, renda variável, reserva de
 
 ### Task 3: Verify, deploy, checkpoint
 
-- [ ] **Step 1: `npx tsc --noEmit` and `npx next lint`** — both clean.
+- [x] **Step 1: `npx tsc --noEmit` and `npx next lint`** — both clean.
 
-- [ ] **Step 2: Push and confirm the Vercel deploy succeeds**
+- [x] **Step 2: Push and confirm the Vercel deploy succeeds**
 
 ```bash
 git push origin main
