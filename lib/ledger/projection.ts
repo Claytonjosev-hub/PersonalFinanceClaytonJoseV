@@ -180,3 +180,107 @@ export function computeIndicadores(
 export function totalDebtInstallmentsForMonth(debts: Debt[], month: MonthKey): number {
   return debts.reduce((sum, debt) => sum + installmentForMonth(debt, month), 0);
 }
+
+// --- Daily projection (Fluxo de Caixa) ---
+
+export type DailyEntry = {
+  day: number;
+  receitasAutomaticas: number;
+  receitasManuais: number;
+  despesasAutomaticas: number;
+  despesasManuais: number;
+  saldo: number;
+};
+
+function daysInMonth(month: MonthKey): number {
+  return new Date(month.year, month.month, 0).getDate();
+}
+
+// Clamps a configured due_day to the last real day of the month (e.g. 31 in
+// February lands on the 28th/29th, never overflows into March), and falls
+// back to day 1 when no due_day is configured.
+export function dueDayInMonth(dueDay: number | null, month: MonthKey): number {
+  if (dueDay == null) return 1;
+  return Math.min(dueDay, daysInMonth(month));
+}
+
+export function computeDailyEntriesForMonth(
+  month: MonthKey,
+  parameters: { salary_day: number; initial_balance: number },
+  recurringIncomes: RecurringIncome[],
+  recurringExpenses: RecurringExpense[],
+  debts: Debt[],
+  paymentMethods: PaymentMethod[],
+  transactions: Transaction[],
+  saldoInicioDoMes: number
+): DailyEntry[] {
+  const total = daysInMonth(month);
+  const recurringIncomeTotal = recurringIncomes.reduce((sum, i) => sum + i.amount, 0);
+
+  // Automatic expense amount due on each day, aggregated across every
+  // payment method (debt installments + recurring expenses tied to it) plus
+  // recurring expenses with no payment method (placed by their own due_day).
+  const despesaAutomaticaPorDia = new Map<number, number>();
+
+  for (const pm of paymentMethods) {
+    const debtTotal = debts.reduce(
+      (sum, debt) => (debt.payment_method_id === pm.id ? sum + installmentForMonth(debt, month) : sum),
+      0
+    );
+    const recurringTotal = recurringExpenses.reduce(
+      (sum, exp) => (exp.payment_method_id === pm.id ? sum + exp.amount : sum),
+      0
+    );
+    const amount = debtTotal + recurringTotal;
+    if (amount === 0) continue;
+    const day = dueDayInMonth(pm.due_day, month);
+    despesaAutomaticaPorDia.set(day, (despesaAutomaticaPorDia.get(day) ?? 0) + amount);
+  }
+
+  // Debts and recurring expenses with no payment method fall back to their
+  // own due_day (debts have none — placed on day 1) / recurring_expenses.due_day.
+  const semFormaPagamentoDebts = debts.reduce(
+    (sum, debt) => (debt.payment_method_id == null ? sum + installmentForMonth(debt, month) : sum),
+    0
+  );
+  if (semFormaPagamentoDebts > 0) {
+    despesaAutomaticaPorDia.set(1, (despesaAutomaticaPorDia.get(1) ?? 0) + semFormaPagamentoDebts);
+  }
+  for (const exp of recurringExpenses) {
+    if (exp.payment_method_id != null) continue;
+    const day = dueDayInMonth(exp.due_day, month);
+    despesaAutomaticaPorDia.set(day, (despesaAutomaticaPorDia.get(day) ?? 0) + exp.amount);
+  }
+
+  let saldo = saldoInicioDoMes;
+  const entries: DailyEntry[] = [];
+
+  for (let day = 1; day <= total; day++) {
+    const receitasAutomaticas = day === parameters.salary_day ? recurringIncomeTotal : 0;
+
+    let receitasManuais = 0;
+    let despesasManuais = 0;
+    for (const tx of transactions) {
+      const txDate = monthKeyFromDate(tx.date);
+      if (!monthKeyEquals(txDate, month)) continue;
+      if (Number(tx.date.slice(8, 10)) !== day) continue;
+      if (tx.type === 'receita') receitasManuais += tx.amount;
+      else despesasManuais += tx.amount;
+    }
+
+    const despesasAutomaticas = despesaAutomaticaPorDia.get(day) ?? 0;
+
+    saldo = saldo + receitasAutomaticas + receitasManuais - despesasAutomaticas - despesasManuais;
+
+    entries.push({
+      day,
+      receitasAutomaticas,
+      receitasManuais,
+      despesasAutomaticas,
+      despesasManuais,
+      saldo,
+    });
+  }
+
+  return entries;
+}
