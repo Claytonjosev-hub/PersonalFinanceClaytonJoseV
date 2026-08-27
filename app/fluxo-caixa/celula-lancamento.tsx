@@ -46,12 +46,12 @@ export function CelulaLancamento({
           onKeyDown={(e) => {
             if (e.key === 'Escape') setEditing(false);
           }}
-          className="w-16 rounded border border-accent bg-bg px-1 py-0.5 text-right text-xs tabular-nums"
+          className="w-16 rounded-md border border-accent bg-bg px-1 py-0.5 text-right text-xs tabular-nums focus:outline-none focus:ring-2 focus:ring-accent/40"
         />
         <button
           type="submit"
           disabled={pending}
-          className="text-xs text-accent disabled:opacity-50"
+          className="rounded-md px-1 text-xs font-medium text-accent transition-colors hover:bg-accent-muted disabled:opacity-50"
           title="Lançar"
         >
           ✓
@@ -59,7 +59,7 @@ export function CelulaLancamento({
         <button
           type="button"
           onClick={() => setEditing(false)}
-          className="text-xs text-fg/50"
+          className="rounded-md px-1 text-xs text-fg/50 transition-colors hover:bg-muted hover:text-fg"
           title="Cancelar"
         >
           ✕
@@ -72,7 +72,7 @@ export function CelulaLancamento({
     <button
       type="button"
       onClick={() => setEditing(true)}
-      className="w-full rounded px-1 text-right tabular-nums hover:bg-muted"
+      className="w-full rounded-md px-1 text-right tabular-nums transition-colors hover:bg-muted"
       title={`Clique para lançar uma ${type === 'receita' ? 'receita' : 'despesa'} manual em ${date}`}
     >
       {amount === 0 ? '—' : formatBRL(amount)}

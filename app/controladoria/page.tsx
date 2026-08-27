@@ -65,8 +65,8 @@ export default async function ControladoriaPage() {
   return (
     <div className="min-h-screen">
       <Nav activePath="/controladoria" />
-      <main className="mx-auto flex max-w-full flex-col gap-6 p-6">
-        <h1 className="text-2xl font-semibold">Controladoria</h1>
+      <main className="mx-auto flex max-w-full flex-col gap-8 p-6 sm:p-8">
+        <h1 className="text-2xl font-semibold tracking-tight">Controladoria</h1>
         <TabelaControladoria
           monthsAxis={monthsAxis}
           monthlyReceitas={monthlyReceitas}

@@ -4,49 +4,49 @@ import { saveDebtWithoutSchedule, archiveDebtWithoutScheduleAction } from './act
 
 export function SemCronograma({ debts }: { debts: DebtWithoutSchedule[] }) {
   return (
-    <section className="rounded border border-border p-6">
-      <h2 className="text-lg font-semibold">Dívidas sem cronograma definido</h2>
+    <section className="rounded-xl border border-border-subtle bg-surface p-6 shadow-soft">
+      <h2 className="text-lg font-semibold tracking-tight">Dívidas sem cronograma definido</h2>
       <div className="mt-4 space-y-2">
         {debts.map((debt) => (
           <form
             key={debt.id}
             action={saveDebtWithoutSchedule}
-            className="flex flex-wrap items-center gap-2 rounded border border-border p-2"
+            className="flex flex-wrap items-center gap-2 rounded-lg border border-border-subtle bg-bg/40 p-2"
           >
             <input type="hidden" name="id" value={debt.id} />
             <input
               name="description"
               defaultValue={debt.description}
-              className="min-w-[8rem] flex-1 rounded border border-border bg-bg px-2 py-1 text-sm"
+              className="min-w-[8rem] flex-1 rounded-lg border border-border bg-bg px-2 py-1 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
             />
             <input
               name="creditor"
               defaultValue={debt.creditor}
               placeholder="Credor"
-              className="w-32 rounded border border-border bg-bg px-2 py-1 text-sm"
+              className="w-32 rounded-lg border border-border bg-bg px-2 py-1 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
             />
             <input
               name="open_balance"
               type="number"
               step="0.01"
               defaultValue={debt.open_balance}
-              className="w-28 rounded border border-border bg-bg px-2 py-1 text-sm tabular-nums"
+              className="w-28 rounded-lg border border-border bg-bg px-2 py-1 text-sm tabular-nums transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
             />
             <input
               name="notes"
               defaultValue={debt.notes ?? ''}
               placeholder="Observação"
-              className="min-w-[8rem] flex-1 rounded border border-border bg-bg px-2 py-1 text-sm"
+              className="min-w-[8rem] flex-1 rounded-lg border border-border bg-bg px-2 py-1 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
             />
             <button
               type="submit"
-              className="rounded border border-border px-2 py-1 text-xs hover:bg-muted"
+              className="rounded-lg border border-border px-2 py-1 text-xs font-medium transition-colors hover:bg-muted hover:text-fg"
             >
               Salvar
             </button>
             <button
               formAction={archiveDebtWithoutScheduleAction}
-              className="rounded border border-border px-2 py-1 text-xs text-negative hover:bg-muted"
+              className="rounded-lg border border-negative/30 px-2 py-1 text-xs font-medium text-negative transition-colors hover:bg-negative/10"
             >
               Arquivar
             </button>
@@ -58,13 +58,13 @@ export function SemCronograma({ debts }: { debts: DebtWithoutSchedule[] }) {
             name="description"
             placeholder="Descrição"
             required
-            className="min-w-[8rem] flex-1 rounded border border-border bg-bg px-2 py-1 text-sm"
+            className="min-w-[8rem] flex-1 rounded-lg border border-border bg-bg px-2 py-1 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
           />
           <input
             name="creditor"
             placeholder="Credor"
             required
-            className="w-32 rounded border border-border bg-bg px-2 py-1 text-sm"
+            className="w-32 rounded-lg border border-border bg-bg px-2 py-1 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
           />
           <input
             name="open_balance"
@@ -72,16 +72,16 @@ export function SemCronograma({ debts }: { debts: DebtWithoutSchedule[] }) {
             step="0.01"
             placeholder="0,00"
             required
-            className="w-28 rounded border border-border bg-bg px-2 py-1 text-sm tabular-nums"
+            className="w-28 rounded-lg border border-border bg-bg px-2 py-1 text-sm tabular-nums transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
           />
           <input
             name="notes"
             placeholder="Observação"
-            className="min-w-[8rem] flex-1 rounded border border-border bg-bg px-2 py-1 text-sm"
+            className="min-w-[8rem] flex-1 rounded-lg border border-border bg-bg px-2 py-1 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
           />
           <button
             type="submit"
-            className="rounded bg-accent px-2 py-1 text-xs text-accent-foreground"
+            className="rounded-lg bg-accent px-2 py-1 text-xs font-medium text-accent-foreground shadow-soft transition-colors hover:opacity-90"
           >
             Adicionar
           </button>

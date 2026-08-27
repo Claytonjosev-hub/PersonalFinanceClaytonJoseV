@@ -12,34 +12,34 @@ function CategoryColumn({
 }) {
   return (
     <div className="flex-1 space-y-2">
-      <h3 className="text-sm font-medium text-fg/70">{title}</h3>
+      <h3 className="text-xs font-medium uppercase tracking-wide text-fg/60">{title}</h3>
       {categories.map((cat) => (
         <form
           key={cat.id}
           action={saveCategory}
-          className="flex flex-wrap items-center gap-2 rounded border border-border p-2"
+          className="flex flex-wrap items-center gap-2 rounded-lg border border-border-subtle bg-bg/40 p-2"
         >
           <input type="hidden" name="id" value={cat.id} />
           <input
             name="color"
             type="color"
             defaultValue={cat.color ?? '#a3a3a3'}
-            className="h-8 w-10 shrink-0 rounded border border-border bg-bg"
+            className="h-8 w-10 shrink-0 rounded-lg border border-border bg-bg"
           />
           <input
             name="name"
             defaultValue={cat.name}
-            className="min-w-[8rem] flex-1 rounded border border-border bg-bg px-2 py-1 text-sm"
+            className="min-w-[8rem] flex-1 rounded-lg border border-border bg-bg px-2 py-1 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
           />
           <button
             type="submit"
-            className="rounded border border-border px-2 py-1 text-xs hover:bg-muted"
+            className="rounded-lg border border-border px-2 py-1 text-xs font-medium transition-colors hover:bg-muted hover:text-fg"
           >
             Salvar
           </button>
           <button
             formAction={archiveCategoryAction}
-            className="rounded border border-border px-2 py-1 text-xs text-negative hover:bg-muted"
+            className="rounded-lg border border-negative/30 px-2 py-1 text-xs font-medium text-negative transition-colors hover:bg-negative/10"
           >
             Arquivar
           </button>
@@ -52,17 +52,17 @@ function CategoryColumn({
           name="color"
           type="color"
           defaultValue="#a3a3a3"
-          className="h-8 w-10 shrink-0 rounded border border-border bg-bg"
+          className="h-8 w-10 shrink-0 rounded-lg border border-border bg-bg"
         />
         <input
           name="name"
           placeholder="Nova categoria"
           required
-          className="min-w-[8rem] flex-1 rounded border border-border bg-bg px-2 py-1 text-sm"
+          className="min-w-[8rem] flex-1 rounded-lg border border-border bg-bg px-2 py-1 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
         />
         <button
           type="submit"
-          className="rounded bg-accent px-2 py-1 text-xs text-accent-foreground"
+          className="rounded-lg bg-accent px-2 py-1 text-xs font-medium text-accent-foreground shadow-soft transition-colors hover:opacity-90"
         >
           Adicionar
         </button>
@@ -77,8 +77,8 @@ export function Categorias({ categories }: { categories: Category[] }) {
   const despesas = active.filter((c) => c.type === 'despesa');
 
   return (
-    <section className="rounded border border-border p-6">
-      <h2 className="text-lg font-semibold">Categorias</h2>
+    <section className="rounded-xl border border-border-subtle bg-surface p-6 shadow-soft">
+      <h2 className="text-lg font-semibold tracking-tight">Categorias</h2>
       <div className="mt-4 flex flex-col gap-6 sm:flex-row">
         <CategoryColumn title="Receita" type="receita" categories={receitas} />
         <CategoryColumn title="Despesa" type="despesa" categories={despesas} />

@@ -38,17 +38,19 @@ export function NovoLancamento({
     <form
       ref={formRef}
       action={handleSubmit}
-      className="flex flex-wrap items-end gap-2 rounded border border-border p-4"
+      className="flex flex-wrap items-end gap-3 rounded-xl border border-border-subtle bg-surface p-4 shadow-soft sm:p-6"
     >
-      <div className="flex gap-1 rounded-full border border-border p-1 text-sm">
+      <div className="flex gap-1 rounded-full border border-border bg-muted/40 p-1 text-sm">
         {(['despesa', 'receita'] as const).map((option) => (
           <button
             key={option}
             type="button"
             onClick={() => setType(option)}
             className={
-              'rounded-full px-3 py-1 transition-colors ' +
-              (type === option ? 'bg-accent text-accent-foreground' : 'text-fg/70 hover:bg-muted')
+              'rounded-full px-3 py-1 font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 ' +
+              (type === option
+                ? 'bg-accent text-accent-foreground shadow-soft'
+                : 'text-fg/60 hover:bg-muted hover:text-fg')
             }
           >
             {option === 'despesa' ? 'Despesa' : 'Receita'}
@@ -58,22 +60,22 @@ export function NovoLancamento({
       <input type="hidden" name="type" value={type} />
 
       <div className="space-y-1">
-        <label className="text-xs text-fg/70">Data</label>
+        <label className="text-xs font-medium uppercase tracking-wide text-fg/60">Data</label>
         <input
           name="date"
           type="date"
           defaultValue={todayIso()}
           required
-          className="rounded border border-border bg-bg px-2 py-1 text-sm"
+          className="rounded-lg border border-border bg-bg px-2 py-1 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
         />
       </div>
 
       <div className="space-y-1">
-        <label className="text-xs text-fg/70">Categoria</label>
+        <label className="text-xs font-medium uppercase tracking-wide text-fg/60">Categoria</label>
         <select
           name="category_id"
           defaultValue=""
-          className="rounded border border-border bg-bg px-2 py-1 text-sm"
+          className="rounded-lg border border-border bg-bg px-2 py-1 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
         >
           <option value="">—</option>
           {filteredCategories.map((cat) => (
@@ -85,7 +87,7 @@ export function NovoLancamento({
       </div>
 
       <div className="space-y-1">
-        <label className="text-xs text-fg/70">Valor</label>
+        <label className="text-xs font-medium uppercase tracking-wide text-fg/60">Valor</label>
         <input
           ref={amountRef}
           name="amount"
@@ -93,16 +95,16 @@ export function NovoLancamento({
           step="0.01"
           min="0.01"
           required
-          className="w-28 rounded border border-border bg-bg px-2 py-1 text-sm tabular-nums"
+          className="w-28 rounded-lg border border-border bg-bg px-2 py-1 text-sm tabular-nums transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
         />
       </div>
 
       <div className="space-y-1">
-        <label className="text-xs text-fg/70">Forma de pagamento</label>
+        <label className="text-xs font-medium uppercase tracking-wide text-fg/60">Forma de pagamento</label>
         <select
           name="payment_method_id"
           defaultValue=""
-          className="rounded border border-border bg-bg px-2 py-1 text-sm"
+          className="rounded-lg border border-border bg-bg px-2 py-1 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
         >
           <option value="">—</option>
           {paymentMethods.map((pm) => (
@@ -114,17 +116,17 @@ export function NovoLancamento({
       </div>
 
       <div className="min-w-[8rem] flex-1 space-y-1">
-        <label className="text-xs text-fg/70">Observação</label>
+        <label className="text-xs font-medium uppercase tracking-wide text-fg/60">Observação</label>
         <input
           name="notes"
-          className="w-full rounded border border-border bg-bg px-2 py-1 text-sm"
+          className="w-full rounded-lg border border-border bg-bg px-2 py-1 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
         />
       </div>
 
       <button
         type="submit"
         disabled={pending}
-        className="rounded bg-accent px-4 py-2 text-sm text-accent-foreground disabled:opacity-50"
+        className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-foreground shadow-soft transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 disabled:opacity-50"
       >
         {pending ? 'Salvando…' : 'Lançar'}
       </button>

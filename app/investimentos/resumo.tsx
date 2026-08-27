@@ -18,24 +18,33 @@ function Card({
   label,
   invested,
   current,
+  emphasis = false,
 }: {
   label: string;
   invested: number;
   current: number;
+  emphasis?: boolean;
 }) {
   const rentabilidade = current - invested;
   return (
-    <div className="rounded border border-border p-4">
-      <h3 className="text-sm font-medium text-fg/70">{label}</h3>
-      <p className="mt-1 text-2xl font-semibold tabular-nums">{formatBRL(current)}</p>
-      <dl className="mt-2 space-y-1 text-xs text-fg/70">
+    <div
+      className={
+        'rounded-lg p-4 ' +
+        (emphasis ? 'border border-accent/20 bg-accent-muted/50' : 'border border-border-subtle bg-bg/40')
+      }
+    >
+      <h3 className="text-xs font-medium uppercase tracking-wide text-fg/60">{label}</h3>
+      <p className="mt-1.5 text-2xl font-semibold tracking-tight tabular-nums">
+        {formatBRL(current)}
+      </p>
+      <dl className="mt-3 space-y-1 text-xs tabular-nums text-fg/60">
         <div className="flex justify-between">
           <dt>Investido</dt>
-          <dd className="tabular-nums">{formatBRL(invested)}</dd>
+          <dd>{formatBRL(invested)}</dd>
         </div>
         <div className="flex justify-between">
           <dt>Rentabilidade</dt>
-          <dd className={'tabular-nums ' + (rentabilidade < 0 ? 'text-negative' : 'text-positive')}>
+          <dd className={rentabilidade < 0 ? 'text-negative' : 'text-positive'}>
             {formatBRL(rentabilidade)}
           </dd>
         </div>
@@ -49,10 +58,10 @@ export function Resumo({ investments }: { investments: Investment[] }) {
   const totalCurrent = investments.reduce((sum, i) => sum + i.current_amount, 0);
 
   return (
-    <section className="rounded border border-border p-6">
-      <h2 className="text-lg font-semibold">Resumo</h2>
+    <section className="rounded-xl border border-border-subtle bg-surface p-6 shadow-soft">
+      <h2 className="text-lg font-semibold tracking-tight">Resumo</h2>
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card label="Total geral" invested={totalInvested} current={totalCurrent} />
+        <Card label="Total geral" invested={totalInvested} current={totalCurrent} emphasis />
         {(['renda_fixa', 'renda_variavel', 'reserva_emergencia'] as const).map((type) => {
           const ofType = investments.filter((i) => i.type === type);
           return (

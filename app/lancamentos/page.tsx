@@ -34,55 +34,72 @@ export default async function LancamentosPage() {
   return (
     <div className="min-h-screen">
       <Nav activePath="/lancamentos" />
-      <main className="mx-auto flex max-w-4xl flex-col gap-6 p-6">
-        <h1 className="text-2xl font-semibold">Lançamentos</h1>
+      <main className="mx-auto flex max-w-4xl flex-col gap-8 p-6 sm:p-8">
+        <h1 className="text-2xl font-semibold tracking-tight">Lançamentos</h1>
         <NovoLancamento categories={categories} paymentMethods={paymentMethods} />
 
-        <section className="rounded border border-border p-6">
-          <h2 className="text-lg font-semibold">Lançamentos recentes</h2>
-          <div className="mt-4 overflow-x-auto">
+        <section className="rounded-xl border border-border-subtle bg-surface p-6 shadow-soft">
+          <h2 className="text-lg font-semibold tracking-tight">Lançamentos recentes</h2>
+          <div className="mt-4 overflow-x-auto rounded-lg">
             <table className="w-full min-w-max border-collapse text-sm">
               <thead>
                 <tr>
-                  <th className="border-b border-border p-2 text-left">Data</th>
-                  <th className="border-b border-border p-2 text-left">Tipo</th>
-                  <th className="border-b border-border p-2 text-left">Categoria</th>
-                  <th className="border-b border-border p-2 text-left">Forma de pagamento</th>
-                  <th className="border-b border-border p-2 text-right">Valor</th>
-                  <th className="border-b border-border p-2"></th>
+                  <th className="border-b border-border-subtle bg-muted/70 p-2.5 text-left text-xs font-medium uppercase tracking-wide text-fg/60">
+                    Data
+                  </th>
+                  <th className="border-b border-border-subtle bg-muted/70 p-2.5 text-left text-xs font-medium uppercase tracking-wide text-fg/60">
+                    Tipo
+                  </th>
+                  <th className="border-b border-border-subtle bg-muted/70 p-2.5 text-left text-xs font-medium uppercase tracking-wide text-fg/60">
+                    Categoria
+                  </th>
+                  <th className="border-b border-border-subtle bg-muted/70 p-2.5 text-left text-xs font-medium uppercase tracking-wide text-fg/60">
+                    Forma de pagamento
+                  </th>
+                  <th className="border-b border-border-subtle bg-muted/70 p-2.5 text-right text-xs font-medium uppercase tracking-wide text-fg/60">
+                    Valor
+                  </th>
+                  <th className="border-b border-border-subtle bg-muted/70 p-2.5"></th>
                 </tr>
               </thead>
               <tbody>
                 {recent.map((tx) => (
-                  <tr key={tx.id}>
-                    <td className="border-b border-border p-2 tabular-nums">{tx.date}</td>
-                    <td className="border-b border-border p-2">
+                  <tr key={tx.id} className="even:bg-fg/[0.02] hover:bg-muted/40">
+                    <td className="border-b border-border-subtle p-2 tabular-nums text-fg/70">
+                      {tx.date}
+                    </td>
+                    <td className="border-b border-border-subtle p-2">
                       <span
                         className={
-                          tx.type === 'receita' ? 'text-positive' : 'text-negative'
+                          'rounded-full px-2 py-0.5 text-xs font-medium ' +
+                          (tx.type === 'receita'
+                            ? 'bg-positive/10 text-positive'
+                            : 'bg-negative/10 text-negative')
                         }
                       >
                         {tx.type === 'receita' ? 'Receita' : 'Despesa'}
                       </span>
                     </td>
-                    <td className="border-b border-border p-2">{categoryName(tx.category_id)}</td>
-                    <td className="border-b border-border p-2">
+                    <td className="border-b border-border-subtle p-2">{categoryName(tx.category_id)}</td>
+                    <td className="border-b border-border-subtle p-2">
                       {paymentMethodName(tx.payment_method_id)}
                     </td>
-                    <td className="border-b border-border p-2 text-right tabular-nums">
+                    <td className="border-b border-border-subtle p-2 text-right tabular-nums">
                       {formatBRL(tx.amount)}
                     </td>
-                    <td className="border-b border-border p-2 text-right">
+                    <td className="border-b border-border-subtle p-2 text-right">
                       <form action={deleteTransactionAction}>
                         <input type="hidden" name="id" value={tx.id} />
-                        <button className="text-xs text-negative hover:underline">Excluir</button>
+                        <button className="rounded-md px-1.5 py-0.5 text-xs font-medium text-negative transition-colors hover:bg-negative/10">
+                          Excluir
+                        </button>
                       </form>
                     </td>
                   </tr>
                 ))}
                 {recent.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="p-4 text-center text-fg/70">
+                    <td colSpan={6} className="p-6 text-center text-sm text-fg/60">
                       Nenhum lançamento ainda.
                     </td>
                   </tr>

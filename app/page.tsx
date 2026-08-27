@@ -13,8 +13,8 @@ export default async function Home() {
   return (
     <div className="min-h-screen">
       <Nav activePath="/" />
-      <main className="mx-auto flex max-w-md flex-col gap-6 p-8">
-        <div className="rounded border border-border p-6">
+      <main className="mx-auto flex max-w-md flex-col gap-8 p-6 sm:p-8">
+        <div className="rounded-xl border border-border-subtle bg-surface p-6 shadow-soft">
           <p>
             Logado como <span className="font-medium">{data.user!.email}</span>.
           </p>

@@ -36,18 +36,18 @@ export function TabelaFluxo({
   );
 
   return (
-    <section className="rounded border border-border p-4">
-      <p className="mb-3 text-xs text-fg/70">
+    <section className="rounded-xl border border-border-subtle bg-surface p-4 shadow-soft sm:p-6">
+      <p className="mb-4 text-xs text-fg/60">
         Role para o lado para ver os outros meses — como em uma planilha. Clique em um valor de
         Receita ou Despesa para lançar um teste direto naquele dia.
       </p>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto rounded-lg">
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr>
               <th
                 rowSpan={2}
-                className="sticky left-0 z-10 border-b border-r border-border bg-bg p-2 text-left align-bottom"
+                className="sticky left-0 z-10 border-b border-r border-border-subtle bg-surface p-2 text-left align-bottom text-xs font-medium uppercase tracking-wide text-fg/60"
               >
                 Dia
               </th>
@@ -55,7 +55,7 @@ export function TabelaFluxo({
                 <th
                   key={`${m.year}-${m.month}`}
                   colSpan={4}
-                  className="border-b border-l border-border bg-muted p-2 text-center font-semibold"
+                  className="border-b border-l border-border-subtle bg-muted/70 p-2.5 text-center text-sm font-semibold tracking-tight"
                 >
                   {m.label}
                 </th>
@@ -66,25 +66,25 @@ export function TabelaFluxo({
                 <Fragment key={`${m.year}-${m.month}`}>
                   <th
                     key={`${m.year}-${m.month}-receitas`}
-                    className="border-b border-l border-border p-2 text-right font-normal text-fg/70"
+                    className="border-b border-l border-border-subtle bg-muted/40 p-2 text-right text-xs font-medium uppercase tracking-wide text-fg/60"
                   >
                     Receitas
                   </th>
                   <th
                     key={`${m.year}-${m.month}-despesas`}
-                    className="border-b border-border p-2 text-right font-normal text-fg/70"
+                    className="border-b border-border-subtle bg-muted/40 p-2 text-right text-xs font-medium uppercase tracking-wide text-fg/60"
                   >
                     Despesas
                   </th>
                   <th
                     key={`${m.year}-${m.month}-diario`}
-                    className="border-b border-border p-2 text-right font-normal text-fg/70"
+                    className="border-b border-border-subtle bg-muted/40 p-2 text-right text-xs font-medium uppercase tracking-wide text-fg/60"
                   >
                     Diário
                   </th>
                   <th
                     key={`${m.year}-${m.month}-saldo`}
-                    className="border-b border-border p-2 text-right font-normal text-fg/70"
+                    className="border-b border-border-subtle bg-muted/40 p-2 text-right text-xs font-medium uppercase tracking-wide text-fg/60"
                   >
                     Saldo
                   </th>
@@ -94,8 +94,8 @@ export function TabelaFluxo({
           </thead>
           <tbody>
             {Array.from({ length: maxDays }, (_, i) => i + 1).map((day) => (
-              <tr key={day}>
-                <td className="sticky left-0 z-10 border-r border-border bg-bg p-2 tabular-nums">
+              <tr key={day} className="even:bg-fg/[0.02]">
+                <td className="sticky left-0 z-10 border-r border-border-subtle bg-surface p-2 tabular-nums text-fg/70">
                   {day}
                 </td>
                 {monthsAxis.map((m, monthIndex) => {
@@ -105,7 +105,7 @@ export function TabelaFluxo({
                       <td
                         key={`${m.year}-${m.month}-${day}`}
                         colSpan={4}
-                        className="border-l border-border bg-muted/40 p-2"
+                        className="border-l border-border-subtle bg-muted/30 p-2"
                       />
                     );
                   }
@@ -119,7 +119,7 @@ export function TabelaFluxo({
                       <td
                         key={`${m.year}-${m.month}-${day}-r`}
                         className={
-                          'border-l border-border p-1 ' + (isToday ? 'bg-accent/10' : '')
+                          'border-l border-border-subtle p-1 ' + (isToday ? 'bg-accent/10' : '')
                         }
                       >
                         <CelulaLancamento date={date} type="receita" amount={receitasDoDia} />
@@ -157,25 +157,28 @@ export function TabelaFluxo({
             ))}
           </tbody>
           <tfoot>
-            <tr className="font-semibold">
-              <td className="sticky left-0 z-10 border-r border-t border-border bg-bg p-2">
+            <tr className="bg-muted/60 font-semibold">
+              <td className="sticky left-0 z-10 border-r border-t border-border-subtle bg-muted/60 p-2">
                 Total
               </td>
               {monthsAxis.map((m, i) => (
                 <Fragment key={`${m.year}-${m.month}-total`}>
                   <td
                     key={`${m.year}-${m.month}-total-r`}
-                    className="border-l border-t border-border p-2 text-right tabular-nums"
+                    className="border-l border-t border-border-subtle p-2 text-right tabular-nums"
                   >
                     {formatBRL(totalsByMonth[i].receitas)}
                   </td>
                   <td
                     key={`${m.year}-${m.month}-total-d`}
-                    className="border-t border-border p-2 text-right tabular-nums"
+                    className="border-t border-border-subtle p-2 text-right tabular-nums"
                   >
                     {formatBRL(totalsByMonth[i].despesas)}
                   </td>
-                  <td colSpan={2} className="border-t border-border p-2 text-right tabular-nums">
+                  <td
+                    colSpan={2}
+                    className="border-t border-border-subtle p-2 text-right tabular-nums"
+                  >
                     Resultado: {formatBRL(resultados[i])}
                   </td>
                 </Fragment>

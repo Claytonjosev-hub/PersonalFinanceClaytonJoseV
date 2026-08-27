@@ -38,8 +38,8 @@ export default async function ParametrosPage() {
   return (
     <div className="min-h-screen">
       <Nav activePath="/parametros" />
-      <main className="mx-auto flex max-w-4xl flex-col gap-6 p-6">
-        <h1 className="text-2xl font-semibold">Parâmetros</h1>
+      <main className="mx-auto flex max-w-4xl flex-col gap-8 p-6 sm:p-8">
+        <h1 className="text-2xl font-semibold tracking-tight">Parâmetros</h1>
         <ConfiguracaoGeral parameters={parameters} />
         <FormasPagamento paymentMethods={paymentMethods} />
         <Categorias categories={categories} />
@@ -49,8 +49,8 @@ export default async function ParametrosPage() {
           paymentMethods={paymentMethods}
           categories={categories}
         />
-        <section className="rounded border border-border p-6">
-          <h2 className="text-lg font-semibold">Eixo de meses</h2>
+        <section className="rounded-xl border border-border-subtle bg-surface p-6 shadow-soft">
+          <h2 className="text-lg font-semibold tracking-tight">Eixo de meses</h2>
           <p className="mt-1 text-sm text-fg/70">
             Somente leitura — calculado a partir do mês inicial e do nº de meses projetados.
           </p>
@@ -58,7 +58,7 @@ export default async function ParametrosPage() {
             {monthsAxis.map((m) => (
               <li
                 key={`${m.year}-${m.month}`}
-                className="rounded-full border border-border px-3 py-1 text-sm tabular-nums"
+                className="rounded-full border border-border-subtle bg-muted px-3 py-1 text-sm tabular-nums text-fg/70"
               >
                 {m.label}
               </li>

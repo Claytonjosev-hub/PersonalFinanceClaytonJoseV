@@ -95,18 +95,23 @@ export function TabelaControladoria({
     });
   }
 
-  const cell = 'border-b border-border p-2 text-right tabular-nums';
-  const sticky = 'sticky left-0 z-10 border-b border-border bg-bg p-2';
+  const cell = 'border-b border-border-subtle px-3 py-2 text-right tabular-nums';
+  const sticky = 'sticky left-0 z-10 border-b border-border-subtle bg-surface px-3 py-2';
+  const headCell =
+    'sticky top-0 z-20 border-b border-border-subtle bg-muted/70 px-3 py-2.5 text-right text-xs font-medium uppercase tracking-wide text-fg/60';
+  const headSticky =
+    'sticky left-0 top-0 z-30 border-b border-border-subtle bg-muted/70 px-3 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-fg/60';
+  const groupRow = 'bg-muted/60 px-3 py-2 text-sm font-semibold uppercase tracking-wide text-fg/80';
 
   return (
-    <section className="rounded border border-border p-4">
-      <div className="overflow-x-auto">
+    <section className="rounded-xl border border-border-subtle bg-surface p-4 shadow-soft sm:p-6">
+      <div className="overflow-x-auto rounded-lg">
         <table className="w-full min-w-max border-collapse text-sm">
           <thead>
             <tr>
-              <th className={sticky + ' text-left'}>Categoria</th>
+              <th className={headSticky}>Categoria</th>
               {monthsAxis.map((m) => (
-                <th key={`${m.year}-${m.month}`} className={cell + ' font-medium'}>
+                <th key={`${m.year}-${m.month}`} className={headCell}>
                   {m.label}
                 </th>
               ))}
@@ -115,7 +120,7 @@ export function TabelaControladoria({
           <tbody>
             {/* Receitas ---------------------------------------------------- */}
             <tr>
-              <td colSpan={monthsAxis.length + 1} className="bg-muted p-2 font-semibold">
+              <td colSpan={monthsAxis.length + 1} className={groupRow}>
                 Receitas
               </td>
             </tr>
@@ -143,7 +148,7 @@ export function TabelaControladoria({
 
             {/* Despesas ---------------------------------------------------- */}
             <tr>
-              <td colSpan={monthsAxis.length + 1} className="bg-muted p-2 font-semibold">
+              <td colSpan={monthsAxis.length + 1} className={groupRow}>
                 Despesas
               </td>
             </tr>
@@ -199,15 +204,15 @@ export function TabelaControladoria({
             </tr>
 
             {/* Resultado ----------------------------------------------------- */}
-            <tr className="bg-muted font-semibold">
-              <td className={sticky + ' bg-muted'}>Resultado do mês</td>
+            <tr className="bg-muted/60 font-semibold">
+              <td className={sticky + ' bg-muted/60'}>Resultado do mês</td>
               {monthsAxis.map((m, i) => {
                 const resultado = monthlyReceitas[i].total - monthlyDespesas[i].total;
                 return (
                   <td
                     key={`${m.year}-${m.month}`}
                     className={
-                      cell + ' bg-muted ' + (resultado < 0 ? 'text-negative' : 'text-positive')
+                      cell + ' bg-muted/60 ' + (resultado < 0 ? 'text-negative' : 'text-positive')
                     }
                   >
                     {formatBRL(resultado)}
@@ -229,14 +234,17 @@ export function TabelaControladoria({
             <tr>
               <td className={sticky}>Status</td>
               {monthsAxis.map((m, i) => (
-                <td
-                  key={`${m.year}-${m.month}`}
-                  className={
-                    cell + ' font-medium ' +
-                    (indicadores[i].status === 'deficit' ? 'text-negative' : 'text-positive')
-                  }
-                >
-                  {indicadores[i].status === 'deficit' ? 'DÉFICIT' : 'OK'}
+                <td key={`${m.year}-${m.month}`} className={cell}>
+                  <span
+                    className={
+                      'inline-block rounded-full px-2 py-0.5 text-xs font-medium ' +
+                      (indicadores[i].status === 'deficit'
+                        ? 'bg-negative/10 text-negative'
+                        : 'bg-positive/10 text-positive')
+                    }
+                  >
+                    {indicadores[i].status === 'deficit' ? 'DÉFICIT' : 'OK'}
+                  </span>
                 </td>
               ))}
             </tr>

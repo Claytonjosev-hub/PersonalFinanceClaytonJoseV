@@ -82,8 +82,8 @@ export default async function FluxoCaixaPage() {
   return (
     <div className="min-h-screen">
       <Nav activePath="/fluxo-caixa" />
-      <main className="mx-auto flex max-w-full flex-col gap-6 p-6">
-        <h1 className="text-2xl font-semibold">Fluxo de Caixa</h1>
+      <main className="mx-auto flex max-w-full flex-col gap-8 p-6 sm:p-8">
+        <h1 className="text-2xl font-semibold tracking-tight">Fluxo de Caixa</h1>
         <TabelaFluxo
           monthsAxis={monthsAxis}
           entriesByMonth={entriesByMonth}

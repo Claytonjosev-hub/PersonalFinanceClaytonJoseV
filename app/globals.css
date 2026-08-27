@@ -11,6 +11,11 @@
   --color-accent-foreground: 255 255 255;
   --color-positive: 22 163 74;
   --color-negative: 220 38 38;
+
+  --color-surface: 255 255 255;
+  --color-border-subtle: 241 241 241;
+  --color-accent-muted: 219 234 254;
+  --shadow-color: 15 23 42;
 }
 
 .dark {
@@ -22,9 +27,24 @@
   --color-accent-foreground: 10 10 10;
   --color-positive: 74 222 128;
   --color-negative: 248 113 113;
+
+  --color-surface: 18 18 18;
+  --color-border-subtle: 32 32 32;
+  --color-accent-muted: 30 45 74;
+  --shadow-color: 0 0 0;
 }
 
 body {
   background-color: rgb(var(--color-bg));
   color: rgb(var(--color-fg));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -32,7 +32,7 @@ export function ThemeToggle() {
   ];
 
   return (
-    <div className="flex gap-1 rounded-full border border-border p-1 text-sm">
+    <div className="flex gap-1 rounded-full border border-border bg-surface p-1 text-sm">
       {options.map((option) => (
         <button
           key={option.value}
@@ -40,8 +40,8 @@ export function ThemeToggle() {
           onClick={() => selectTheme(option.value)}
           aria-pressed={choice === option.value}
           className={
-            'rounded-full px-3 py-1 transition-colors ' +
-            (choice === option.value ? 'bg-accent text-accent-foreground' : 'text-fg/70 hover:bg-muted')
+            'rounded-full px-3 py-1 font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 ' +
+            (choice === option.value ? 'bg-accent text-accent-foreground shadow-soft' : 'text-fg/60 hover:bg-muted hover:text-fg')
           }
         >
           {option.label}

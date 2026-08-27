@@ -19,8 +19,8 @@ export function EndividamentoTotal({
   const total = comCronograma + semCronograma;
 
   return (
-    <section className="rounded border border-border p-6">
-      <h2 className="text-lg font-semibold">Endividamento total</h2>
+    <section className="rounded-xl border border-border-subtle bg-surface p-6 shadow-soft">
+      <h2 className="text-lg font-semibold tracking-tight">Endividamento total</h2>
       <p className="mt-2 text-3xl font-semibold tabular-nums text-negative">{formatBRL(total)}</p>
       <dl className="mt-3 flex gap-6 text-sm tabular-nums text-fg/70">
         <div className="flex gap-1">

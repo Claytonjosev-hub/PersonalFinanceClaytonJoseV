@@ -23,19 +23,26 @@ export function TotaisPorFormaPagamento({
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-      <section className="rounded border border-border p-6">
-        <h2 className="text-lg font-semibold">Total mensal por forma de pagamento</h2>
-        <div className="mt-4 overflow-x-auto">
+      <section className="rounded-xl border border-border-subtle bg-surface p-6 shadow-soft">
+        <h2 className="text-lg font-semibold tracking-tight">Total mensal por forma de pagamento</h2>
+        <div className="mt-4 overflow-x-auto rounded-lg">
           <table className="w-full min-w-max border-collapse text-sm">
             <thead>
               <tr>
-                <th className="border-b border-border p-2 text-left">Mês</th>
+                <th className="border-b border-border-subtle bg-muted/70 p-2.5 text-left text-xs font-medium uppercase tracking-wide text-fg/60">
+                  Mês
+                </th>
                 {paymentMethods.map((pm) => (
-                  <th key={pm.id} className="border-b border-border p-2 text-left font-medium">
+                  <th
+                    key={pm.id}
+                    className="border-b border-border-subtle bg-muted/70 p-2.5 text-right text-xs font-medium uppercase tracking-wide text-fg/60"
+                  >
                     {pm.name}
                   </th>
                 ))}
-                <th className="border-b border-border p-2 text-left font-medium">Total</th>
+                <th className="border-b border-border-subtle bg-muted/70 p-2.5 text-right text-xs font-medium uppercase tracking-wide text-fg/60">
+                  Total
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -43,14 +50,16 @@ export function TotaisPorFormaPagamento({
                 const totals = totalMonthlyByPaymentMethod(debts, month);
                 const monthTotal = Object.values(totals).reduce((sum, v) => sum + v, 0);
                 return (
-                  <tr key={`${month.year}-${month.month}`}>
-                    <td className="border-b border-border p-2 tabular-nums">{month.label}</td>
+                  <tr key={`${month.year}-${month.month}`} className="even:bg-fg/[0.02]">
+                    <td className="border-b border-border-subtle p-2 tabular-nums text-fg/70">
+                      {month.label}
+                    </td>
                     {paymentMethods.map((pm) => (
-                      <td key={pm.id} className="border-b border-border p-2 tabular-nums">
+                      <td key={pm.id} className="border-b border-border-subtle p-2 text-right tabular-nums">
                         {totals[pm.id] ? formatBRL(totals[pm.id]) : '—'}
                       </td>
                     ))}
-                    <td className="border-b border-border p-2 font-medium tabular-nums">
+                    <td className="border-b border-border-subtle p-2 text-right font-medium tabular-nums">
                       {formatBRL(monthTotal)}
                     </td>
                   </tr>
@@ -61,19 +70,22 @@ export function TotaisPorFormaPagamento({
         </div>
       </section>
 
-      <section className="rounded border border-border p-6">
-        <h2 className="text-lg font-semibold">Total comprometido por forma de pagamento</h2>
+      <section className="rounded-xl border border-border-subtle bg-surface p-6 shadow-soft">
+        <h2 className="text-lg font-semibold tracking-tight">Total comprometido por forma de pagamento</h2>
         <p className="mt-1 text-sm text-fg/70">
           Soma do saldo devedor de todas as dívidas ativas por forma de pagamento.
         </p>
         <ul className="mt-4 space-y-2">
           {Object.entries(committed).map(([id, total]) => (
-            <li key={id} className="flex items-center justify-between border-b border-border pb-2">
-              <span>{paymentMethodName(paymentMethods, id)}</span>
+            <li
+              key={id}
+              className="flex items-center justify-between border-b border-border-subtle pb-2"
+            >
+              <span className="text-fg/80">{paymentMethodName(paymentMethods, id)}</span>
               <span className="tabular-nums">{formatBRL(total)}</span>
             </li>
           ))}
-          <li className="flex items-center justify-between pt-2 font-semibold">
+          <li className="flex items-center justify-between pt-1 font-semibold">
             <span>Total geral</span>
             <span className="tabular-nums">{formatBRL(committedGrandTotal)}</span>
           </li>
