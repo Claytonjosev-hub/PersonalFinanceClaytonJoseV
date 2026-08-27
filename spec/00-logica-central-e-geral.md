@@ -118,7 +118,7 @@ Todas as tabelas abaixo têm `user_id` (FK para `auth.users`) e RLS habilitado (
 - Importação de CSV (seção 6)
 
 ### Fase 2 — Camada de análise e conveniência
-- Dashboard com gráficos (evolução de saldo, % da renda comprometida, dívida por credor, patrimônio líquido ao longo do tempo)
+- Dashboard com gráficos (evolução de saldo, % da renda comprometida, dívida por credor, patrimônio líquido ao longo do tempo) — **parcialmente entregue em 2026-08-27** (ver `docs/superpowers/plans/2026-08-27-visual-redesign-home-dashboard-mobile.md`, Task 2): a tela Início hoje mostra saldo atual, disponível para gastar até o próximo salário, total em dívidas e os recebimentos/pagamentos dos próximos 30 dias — tudo sem gráfico e sem série histórica. A evolução de saldo/patrimônio ao longo do tempo, % renda comprometida em série e dívida por credor continuam em aberto.
 - Alertas/notificações (fatura vencendo, saldo projetado ficando negativo, meta de gasto estourada)
 
 ### Fora de escopo por enquanto (backlog futuro)
