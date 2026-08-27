@@ -7,7 +7,7 @@ import type {
   RecurringIncome,
   Transaction,
 } from './types';
-import { monthKeyEquals, monthKeyFromDate } from './months';
+import { addMonths, monthKeyEquals, monthKeyFromDate } from './months';
 import { installmentForMonth } from './debts';
 
 export type CategoryTotal = { categoryId: string | null; categoryName: string; amount: number };
@@ -283,4 +283,119 @@ export function computeDailyEntriesForMonth(
   }
 
   return entries;
+}
+
+// --- Upcoming events (Home dashboard) ---
+
+export type UpcomingItem = {
+  date: string; // ISO yyyy-mm-dd
+  description: string;
+  amount: number;
+};
+
+function isoDate(year: number, month: number, day: number): string {
+  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+}
+
+export function daysBetweenIso(fromIso: string, toIso: string): number {
+  const [fy, fm, fd] = fromIso.split('-').map(Number);
+  const [ty, tm, td] = toIso.split('-').map(Number);
+  return Math.round((Date.UTC(ty, tm - 1, td) - Date.UTC(fy, fm - 1, fd)) / 86400000);
+}
+
+function withinHorizon(todayIso: string, dateIso: string, horizonDays: number): boolean {
+  const delta = daysBetweenIso(todayIso, dateIso);
+  return delta >= 0 && delta <= horizonDays;
+}
+
+// Looks 3 months ahead — enough headroom for any 30-day horizon starting on
+// any day of any month, including a late-month start that spills over an
+// extra month boundary (e.g. Jan 31 + 30 days lands in March).
+const UPCOMING_MONTHS_AHEAD = 3;
+
+export function computeUpcomingReceitas(
+  todayIso: string,
+  horizonDays: number,
+  parameters: { salary_day: number },
+  recurringIncomes: RecurringIncome[],
+  transactions: Transaction[]
+): UpcomingItem[] {
+  const items: UpcomingItem[] = [];
+  const recurringTotal = recurringIncomes.reduce((sum, i) => sum + i.amount, 0);
+
+  if (recurringTotal > 0) {
+    let month = monthKeyFromDate(todayIso);
+    for (let i = 0; i < UPCOMING_MONTHS_AHEAD; i++) {
+      // Mirrors computeDailyEntriesForMonth: an unclamped salary_day simply
+      // has no occurrence in a shorter month (e.g. day 31 in February).
+      if (parameters.salary_day <= daysInMonth(month)) {
+        const candidate = isoDate(month.year, month.month, parameters.salary_day);
+        if (withinHorizon(todayIso, candidate, horizonDays)) {
+          items.push({ date: candidate, description: 'Salário (recorrente)', amount: recurringTotal });
+        }
+      }
+      month = addMonths(month, 1);
+    }
+  }
+
+  for (const tx of transactions) {
+    if (tx.type !== 'receita') continue;
+    if (!withinHorizon(todayIso, tx.date, horizonDays)) continue;
+    items.push({ date: tx.date, description: tx.notes || 'Lançamento manual', amount: tx.amount });
+  }
+
+  return items.sort((a, b) => a.date.localeCompare(b.date));
+}
+
+export function computeUpcomingDespesas(
+  todayIso: string,
+  horizonDays: number,
+  debts: Debt[],
+  recurringExpenses: RecurringExpense[],
+  paymentMethods: PaymentMethod[],
+  transactions: Transaction[]
+): UpcomingItem[] {
+  const items: UpcomingItem[] = [];
+
+  // Same placement rule as computeDailyEntriesForMonth: a debt/expense tied
+  // to a payment method is due on that payment method's due_day, not its
+  // own; one with no payment method falls back to its own due_day (or day 1).
+  function dueDay(paymentMethodId: string | null, ownDueDay: number | null, month: MonthKey): number {
+    if (paymentMethodId) {
+      const pm = paymentMethods.find((p) => p.id === paymentMethodId);
+      return dueDayInMonth(pm?.due_day ?? null, month);
+    }
+    return dueDayInMonth(ownDueDay, month);
+  }
+
+  let month = monthKeyFromDate(todayIso);
+  for (let i = 0; i < UPCOMING_MONTHS_AHEAD; i++) {
+    for (const debt of debts) {
+      const amount = installmentForMonth(debt, month);
+      if (amount === 0) continue;
+      const candidate = isoDate(month.year, month.month, dueDay(debt.payment_method_id, null, month));
+      if (withinHorizon(todayIso, candidate, horizonDays)) {
+        items.push({ date: candidate, description: debt.description, amount });
+      }
+    }
+    for (const exp of recurringExpenses) {
+      const candidate = isoDate(
+        month.year,
+        month.month,
+        dueDay(exp.payment_method_id, exp.due_day, month)
+      );
+      if (withinHorizon(todayIso, candidate, horizonDays)) {
+        items.push({ date: candidate, description: exp.description, amount: exp.amount });
+      }
+    }
+    month = addMonths(month, 1);
+  }
+
+  for (const tx of transactions) {
+    if (tx.type !== 'despesa') continue;
+    if (!withinHorizon(todayIso, tx.date, horizonDays)) continue;
+    items.push({ date: tx.date, description: tx.notes || 'Lançamento manual', amount: tx.amount });
+  }
+
+  return items.sort((a, b) => a.date.localeCompare(b.date));
 }
